@@ -151,7 +151,7 @@ Thus, if you build the app locally, all you have to do in order to run the app i
 
 You can run the most recently built stable image with `docker run -p 8080:80 ghcr.io/pcottle/learngitbranching:main`. Access your environment with at [http://localhost:8080/](<http://localhost:8080/>)
 
-You can build the app and image with the command: `docker build -t ghcr.io/pcottle/learngitbranching:latest`. See the [Makefile](Makefile) for information on how to build locally with docker.
+You can build the app and image with the command: `docker build -t ghcr.io/pcottle/learngitbranching:latest`. See the [Makefile](../Makefile) for information on how to build locally with docker.
 
 ## Some of our amazing contributors
 
