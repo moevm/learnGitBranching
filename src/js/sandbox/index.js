@@ -266,7 +266,6 @@ var Sandbox = Backbone.View.extend({
     var commandMap = {
       'reset solved': this.resetSolved,
       'undo': this.undo,
-      'help general': this.helpDialog,
       'help': this.helpDialog,
       'reset': this.reset,
       'delay': this.delay,

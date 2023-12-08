@@ -147,6 +147,10 @@ var GitDemonstrationView = ContainedBase.extend({
   },
 
   demonstrate: function() {
+    console.log('demonstrate')
+    console.log('demonstrate')
+    console.log('demonstrate')
+    console.log('demonstrate')
     this.$el.toggleClass('demonstrating', true);
 
     var whenDone = Q.defer();
