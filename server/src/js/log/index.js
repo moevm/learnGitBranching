@@ -26,6 +26,8 @@ exports.levelSolved = function(levelName) {
 };
 
 exports.commandEntered = function(value) {
+  // console.log('commandEntered')
+  // console.log(value)
   log('commands', 'commandEntered', value);
 };
 

@@ -266,7 +266,6 @@ var Sandbox = Backbone.View.extend({
     var commandMap = {
       'reset solved': this.resetSolved,
       'undo': this.undo,
-      'help general': this.helpDialog,
       'help': this.helpDialog,
       'reset': this.reset,
       'delay': this.delay,
@@ -483,6 +482,8 @@ var Sandbox = Backbone.View.extend({
   },
 
   helpDialog: function(command, deferred) {
+    console.log(command)
+    console.log(deferred)
     var helpDialog = new MultiView({
       childViews: intl.getDialog(require('../dialogs/sandbox'))
     });

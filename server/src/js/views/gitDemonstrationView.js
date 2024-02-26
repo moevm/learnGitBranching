@@ -95,6 +95,8 @@ var GitDemonstrationView = ContainedBase.extend({
   },
 
   dispatchBeforeCommand: function() {
+    // console.log('dispatchBeforeCommand')
+
     if (!this.options.beforeCommand) {
       return;
     }

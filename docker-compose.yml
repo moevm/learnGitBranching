@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  main:
+    container_name: lean_git_branching
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    command: npm run start:dev
+    restart: always

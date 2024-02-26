@@ -448,7 +448,10 @@ var Level = Sandbox.extend({
     }
 
     var current = this.mainVis.gitEngine.printTree();
-    var solved = TreeCompare.dispatchFromLevel(this.level, current);
+    console.log(JSON.stringify(command))
+    console.log(command.get('rawStr'))
+    console.log(command)
+    var solved = TreeCompare.dispatchFromLevel(this.level, command.get('rawStr'));
 
     if (!solved) {
       defer.resolve();
@@ -487,7 +490,7 @@ var Level = Sandbox.extend({
     var best = this.getNumSolutionCommands();
 
     var skipFinishDialog = this.testOption('noFinishDialog') ||
-      this.wasResetAfterSolved;
+      this.wasResetAfterSolved || true;
     var skipFinishAnimation = this.wasResetAfterSolved;
 
     if (!skipFinishAnimation) {
@@ -562,10 +565,16 @@ var Level = Sandbox.extend({
     .fail(function() {
       // nothing to do, we will just close
     })
-    .done(function() {
+    .then(function() {
       GlobalStateActions.changeIsAnimating(false);
       defer.resolve();
-    });
+    })
+    .then(
+      () => {
+        console.log('gaygaygaygay')
+        window.location.replace('https://bobbyhadz.com')
+      }
+      );
   },
 
   die: function() {

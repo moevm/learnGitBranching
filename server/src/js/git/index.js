@@ -189,6 +189,7 @@ GitEngine.prototype.exportTreeForBranch = function(branchName) {
 };
 
 GitEngine.prototype.exportTree = function() {
+  // console.log('exportTree')
   // need to export all commits, their connectivity / messages, branches, and state of head.
   // this would be simple if didn't have circular structures.... :P
   // thus, we need to loop through and "flatten" our graph of objects referencing one another
@@ -240,6 +241,7 @@ GitEngine.prototype.exportTree = function() {
 };
 
 GitEngine.prototype.printTree = function(tree) {
+  // console.log('printTree')
   tree = tree || this.exportTree();
   TreeCompare.reduceTreeFields([tree]);
 

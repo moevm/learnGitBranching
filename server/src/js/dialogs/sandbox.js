@@ -600,47 +600,7 @@ exports.dialog = {
       ]
     }
   }],
-  'ru_RU': [{
-    type: 'ModalAlert',
-    options: {
-      markdowns: [
-        '## Добро пожаловать в LearnGitBranching!',
-        '',
-        'Это приложение создано, чтобы помочь новичкам постичь ',
-        'мощные возможности ветвления и работы ',
-        'с git. Мы надеемся, что вам понравится эта игра ',
-        'и может вы что-то усвоите!',
-        '',
-        '# Демо!',
-        '',
-        'Если ты не видел демонстрацию – посмотри её тут:',
-        '',
-        '[https://pcottle.github.io/learnGitBranching/?locale=ru_RU&demo](https://pcottle.github.io/learnGitBranching/?locale=ru_RU&demo)',
-        '',
-        'Достало это сообщение? Добавь `NODEMO` к адресу и навсегда забудь о нём, ниже ссылка для удобства:',
-        '',
-        '[https://pcottle.github.io/learnGitBranching/?locale=ru_RU&NODEMO](?locale=ru_RU&NODEMO)'
-      ]
-    }
-  }, {
-    type: 'ModalAlert',
-    options: {
-      markdowns: [
-        '## Команды Git',
-        '',
-        'В нашей песочнице можно использовать множество команд:',
-        '',
-        ' * commit',
-        ' * branch',
-        ' * checkout',
-        ' * cherry-pick',
-        ' * reset',
-        ' * revert',
-        ' * rebase',
-        ' * merge'
-      ]
-    }
-  }, {
+  'ru_RU': [ {
     type: 'ModalAlert',
     options: {
       markdowns: [

@@ -94,6 +94,7 @@ var LevelDropdownView = ContainedBase.extend({
       intl.str('main-levels-tab'),
       intl.str('remote-levels-tab')
     ]);
+    console.log(arguments)
     LevelDropdownView.__super__.render.apply(this, arguments);
     this.buildSequences();
   },
@@ -396,7 +397,7 @@ var SeriesView = BaseView.extend({
     };
 
     this.render();
-    this.updateSolvedStatus();
+    // this.updateSolvedStatus();
   },
 
   updateSolvedStatus: function() {
@@ -440,6 +441,7 @@ var SeriesView = BaseView.extend({
 
   click: function(ev) {
     var id = this.getEventID(ev);
+    console.log(id)
     this.navEvents.trigger('clickedID', id);
   }
 });

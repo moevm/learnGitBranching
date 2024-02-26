@@ -80,14 +80,14 @@ var validateLevel = function(level) {
   level = level || {};
   var requiredFields = [
     'name',
-    'goalTreeString',
+    // 'goalTreeString',
     //'description',
-    'solutionCommand'
+    // 'solutionCommand'
   ];
 
   requiredFields.forEach(function(field) {
     if (level[field] === undefined) {
-      console.log(level);
+      // console.log(level);
       throw new Error('I need this field for a level: ' + field);
     }
   });

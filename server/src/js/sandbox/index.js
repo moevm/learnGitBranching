@@ -148,15 +148,27 @@ var Sandbox = Backbone.View.extend({
   },
 
   commandSubmitted: function(value) {
+    // console.log('commandSubmitted');
+    // console.log(value);
     // allow other things to see this command (aka command history on terminal)
     Main.getEvents().trigger('commandSubmittedPassive', value);
 
     util.splitTextCommand(value, function(command) {
+      // console.log('spitTextCommand')
+      // console.log(value)
+      const a = new Command({
+        rawStr: command,
+        parseWaterfall: this.parseWaterfall
+      })
+      // console.log('create test command')
+      // console.log(a)
       this.commandCollection.add(new Command({
         rawStr: command,
         parseWaterfall: this.parseWaterfall
       }));
     }, this);
+    // console.log('commandCollection')
+    // console.log(this.commandCollection);
   },
 
   startLevel: function(command, deferred) {
@@ -266,7 +278,6 @@ var Sandbox = Backbone.View.extend({
     var commandMap = {
       'reset solved': this.resetSolved,
       'undo': this.undo,
-      'help general': this.helpDialog,
       'help': this.helpDialog,
       'reset': this.reset,
       'delay': this.delay,

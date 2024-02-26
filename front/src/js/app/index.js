@@ -180,6 +180,14 @@ var initRootEvents = function(eventBaton) {
 var initDemo = function(sandbox) {
   var params = util.parseQueryString(window.location.href);
 
+
+  if (params.locale !== undefined && params.locale.length) {
+    LocaleActions.changeLocaleFromURI(params.locale);
+  } else {
+    tryLocaleDetect();
+  }
+
+
   // being the smart programmer I am (not), I don't include a true value on demo, so
   // I have to check if the key exists here
   var commands;
@@ -189,7 +197,10 @@ var initDemo = function(sandbox) {
     });
   }
 
-  if (params.hasOwnProperty('demo')) {
+  if (params.level_id) {
+    levelDropdown.navEvents.trigger('clickedID', params.level_id);
+  }
+  else if (params.hasOwnProperty('demo')) {
     commands = [
       "git commit; git checkout -b bugFix C1; git commit; git merge main; git checkout main; git commit; git rebase bugFix;",
       "delay 1000; reset;",
@@ -197,7 +208,7 @@ var initDemo = function(sandbox) {
       "delay 2000; show goal; delay 1000; hide goal;",
       "git checkout bugFix; git rebase main; git checkout side; git rebase bugFix;",
       "git checkout another; git rebase side; git rebase another main;",
-      "help; levels"
+      "levels"
     ];
   } else if (params.hasOwnProperty('hgdemo')) {
     commands = [
@@ -261,7 +272,7 @@ var initDemo = function(sandbox) {
     });
   } else if (!params.hasOwnProperty('NODEMO')) {
     commands = [
-      "help;",
+      // "help;",
       "levels"
     ];
   }
@@ -276,12 +287,6 @@ var initDemo = function(sandbox) {
     sandbox.mainVis.customEvents.on('gitEngineReady', function() {
       eventBaton.trigger('commandSubmitted', commands.join(''));
     });
-  }
-
-  if (params.locale !== undefined && params.locale.length) {
-    LocaleActions.changeLocaleFromURI(params.locale);
-  } else {
-    tryLocaleDetect();
   }
 
   insertAlternateLinks();
