@@ -19,4 +19,4 @@ FROM nginx:stable-alpine
 WORKDIR /usr/share/nginx/html/
 COPY . .
 # Override the local source with the built artifacts
-COPY --from=export . . 
+COPY --from=export . .

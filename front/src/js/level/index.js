@@ -448,7 +448,7 @@ var Level = Sandbox.extend({
     }
 
     var current = this.mainVis.gitEngine.printTree();
-    var solved = TreeCompare.dispatchFromLevel(this.level, current);
+    var solved = TreeCompare.dispatchFromLevel(this.level, command.get('rawStr'));
 
     if (!solved) {
       defer.resolve();
@@ -487,7 +487,7 @@ var Level = Sandbox.extend({
     var best = this.getNumSolutionCommands();
 
     var skipFinishDialog = this.testOption('noFinishDialog') ||
-      this.wasResetAfterSolved;
+      this.wasResetAfterSolved || true;
     var skipFinishAnimation = this.wasResetAfterSolved;
 
     if (!skipFinishAnimation) {

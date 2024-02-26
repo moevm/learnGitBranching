@@ -200,7 +200,7 @@ var gitDeployPushOrigin = function(done) {
   done();
 };
 
-var fastBuild = series(clean, ifyBuild, style, buildIndex, jshint);
+var fastBuild = series(clean, ifyBuild, style, buildIndex);
 
 var build = series(
   clean,

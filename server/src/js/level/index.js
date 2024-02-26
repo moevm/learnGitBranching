@@ -78,14 +78,14 @@ var Level = Sandbox.extend({
       return;
     }
 
-    if (this.level.startDialog && !this.testOption('noIntroDialog')) {
-      new MultiView(Object.assign(
-        {},
-        intl.getStartDialog(this.level),
-        { deferred: deferred }
-      ));
-      return;
-    }
+    // if (this.level.startDialog && !this.testOption('noIntroDialog')) {
+    //   new MultiView(Object.assign(
+    //     {},
+    //     intl.getStartDialog(this.level),
+    //     { deferred: deferred }
+    //   ));
+    //   return;
+    // }
 
     // otherwise, resolve after a 700 second delay to allow
     // for us to animate easily
@@ -156,9 +156,9 @@ var Level = Sandbox.extend({
   },
 
   initGoalData: function(options) {
-    if (!this.level.goalTreeString || !this.level.solutionCommand) {
-      throw new Error('need goal tree and solution');
-    }
+    // if (!this.level.goalTreeString || !this.level.solutionCommand) {
+    //   throw new Error('need goal tree and solution');
+    // }
   },
 
   takeControl: function() {

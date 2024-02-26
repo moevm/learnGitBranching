@@ -396,7 +396,7 @@ var SeriesView = BaseView.extend({
     };
 
     this.render();
-    this.updateSolvedStatus();
+    // this.updateSolvedStatus();
   },
 
   updateSolvedStatus: function() {
