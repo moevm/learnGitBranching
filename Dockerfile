@@ -17,24 +17,29 @@ COPY ./front ./
 #RUN ls -a
 #WORKDIR /app/front
 #RUN ls -a
-CMD ["npm", "install"]
+RUN ["npm", "install"]
 CMD ["yarn", "gulp", "fastBuild"]
-RUN ls -a
+CMD ["ls", "-a"]
 #RUN cat ./index.html
 
 # Copy front build to server
-RUN ["mv", "/app/front/index.html", "/app/server/dist/index.html"]
-RUN ["mv", "/app/front/build", "/app/server/dist/build"]
-RUN ["mv", "/app/front/assets", "/app/server/dist/assets"]
+CMD ["mv", "/app/front/index.html", "/app/server/dist/index.html"]
+CMD ["mv", "/app/front/build", "/app/server/dist/build"]
+CMD ["mv", "/app/front/assets", "/app/server/dist/assets"]
+RUN ["ls", "-a"]
 
 # Install server dependencies
 WORKDIR /app/server
 COPY /server/package*.json ./
-CMD ["npm", "install"]
+RUN ["cat", "package.json"]
+RUN ["npm", "install"]
 CMD ["npm", "cache", "clean", "--force"]
 
 # Build app source
 WORKDIR /app/server
 COPY ./server ./
 EXPOSE 3000
+RUN ["ls", "-a"]
+#RUN ["npm", "list"]
+RUN ["npm", "install"]
 CMD ["npm", "run", "start:dev"]
