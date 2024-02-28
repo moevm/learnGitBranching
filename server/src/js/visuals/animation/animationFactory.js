@@ -139,7 +139,7 @@ AnimationFactory.genHighlightPromiseAnimation = function(commit, destObj) {
   var visObj = destObj.get('visBranch') || destObj.get('visNode') ||
     destObj.get('visTag');
   if (!visObj) {
-    // console.log(destObj);
+    console.log(destObj);
     throw new Error('could not find vis object for dest obj');
   }
   var visNode = commit.get('visNode');

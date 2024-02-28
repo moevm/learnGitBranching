@@ -47,9 +47,9 @@ var LevelBuilder = Level.extend({
 
     var locale = LocaleStore.getLocale();
     options.level.startDialog = {};
-    // options.level.startDialog[locale] = {
-    //   childViews: intl.getDialog(require('../dialogs/levelBuilder'))
-    // };
+    options.level.startDialog[locale] = {
+      childViews: intl.getDialog(require('../dialogs/levelBuilder'))
+    };
 
     // if we are editing a level our behavior is a bit different
     var editLevelJSON;
@@ -381,7 +381,7 @@ var LevelBuilder = Level.extend({
       'define hint': this.defineHint,
       'define name': this.defineName,
       'edit dialog': this.editDialog,
-      // 'help builder': LevelBuilder.__super__.startDialog
+      'help builder': LevelBuilder.__super__.startDialog
     };
     if (!methodMap[command.get('method')]) {
       throw new Error('woah we don\'t support that method yet');

@@ -78,8 +78,6 @@ var CommandBuffer = Backbone.Model.extend({
 
   processCommand: function(command) {
     command.set('status', 'processing');
-    // console.log('processCommand command')
-    // console.log(command)
     var deferred = Q.defer();
     deferred.promise.then(function() {
       this.setTimeout();
@@ -102,10 +100,7 @@ var CommandBuffer = Backbone.Model.extend({
       deferred.resolve();
       return;
     }
-    // console.log('event name command deferred')
-    // console.log(eventName)
-    // console.log(command)
-    // console.log(deferred)
+
     Main.getEventBaton().trigger(eventName, command, deferred);
   },
 

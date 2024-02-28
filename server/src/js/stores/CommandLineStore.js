@@ -60,10 +60,7 @@ AppConstants.StoreSubscribePrototype,
 
     switch (action.type) {
       case ActionTypes.SUBMIT_COMMAND:
-        // console.log('dispatchToken')
-        // console.log(action)
         _commandHistory.unshift(String(action.text));
-        // console.log(_commandHistory)
         _checkForSize();
         _saveToLocalStorage();
         shouldInform = true;

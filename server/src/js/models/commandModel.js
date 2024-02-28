@@ -217,15 +217,11 @@ var Command = Backbone.Model.extend({
   },
 
   parseOrCatch: function() {
-    // console.log('parseOrCatch')
     this.expandShortcuts(this.get('rawStr'));
     try {
       this.processInstants();
     } catch (err) {
-      // console.log('parseOrCatch error')
-      // console.log(err)
       Errors.filterError(err);
-      // console.log('before filter errors')
       // errorChanged() will handle status and all of that
       this.set('error', err);
       return;
@@ -272,8 +268,6 @@ var Command = Backbone.Model.extend({
 
   processInstants: function() {
     var str = this.get('rawStr');
-    // console.log('processInstants str')
-    // console.log(str)
     // first if the string is empty, they just want a blank line
     if (!str.length) {
       throw new CommandResult({msg: ""});
@@ -296,8 +290,7 @@ var Command = Backbone.Model.extend({
     }
 
     var results = this.get('parseWaterfall').parseAll(rawInput);
-    // console.log('parseAll results')
-    // console.log(results)
+
     if (!results) {
       // nothing parsed successfully
       return false;
@@ -305,9 +298,6 @@ var Command = Backbone.Model.extend({
 
     Object.keys(results.toSet).forEach(function(key) {
       var obj = results.toSet[key];
-      // console.log('parseAll')
-      // console.log(key)
-      // console.log(obj)
       // data comes back from the parsing functions like
       // options (etc) that need to be set
       this.set(key, obj);

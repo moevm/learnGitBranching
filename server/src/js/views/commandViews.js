@@ -138,8 +138,6 @@ var CommandPromptView = Backbone.View.extend({
     // try.github.com also has this, so I'm assuming those engineers gave up as
     // well...
     var text = $('#commandTextField').val();
-    // console.log('updatePrompt')
-    // console.log(text);
     // Alright so we have our initial value for what we want the
     // command line to contain. We need to next split into the
     // parse with the cursor and without
@@ -199,8 +197,6 @@ var CommandPromptView = Backbone.View.extend({
 
   submit: function() {
     var value = this.$('#commandTextField').val().replace('\n', '');
-    // console.log('submit');
-    // console.log(value);
     this.clear();
 
     this.submitCommand(value);
@@ -223,8 +219,6 @@ var CommandPromptView = Backbone.View.extend({
     // we should add the command to our local storage history
     // if it's not a blank line and this is a new command...
     // or if we edited the command in place in history
-    // console.log('addToCommandHistory')
-    // console.log(value)
     var shouldAdd = (value.length && this.index === -1) ||
       ((value.length && this.index !== -1 &&
       CommandLineStore.getCommandHistory()[this.index] !== value));
@@ -238,8 +232,6 @@ var CommandPromptView = Backbone.View.extend({
   },
 
   submitCommand: function(value) {
-    // console.log('submit command');
-    // console.log(value);
     Main.getEventBaton().trigger('commandSubmitted', value);
   }
 });

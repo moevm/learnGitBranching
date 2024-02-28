@@ -87,7 +87,6 @@ var validateLevel = function(level) {
 
   requiredFields.forEach(function(field) {
     if (level[field] === undefined) {
-      // console.log(level);
       throw new Error('I need this field for a level: ' + field);
     }
   });

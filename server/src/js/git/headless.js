@@ -96,8 +96,6 @@ HeadlessGit.prototype.init = function() {
 // horrible hack so we can just quickly get a tree string for async git
 // operations, aka for git demonstration views
 var getTreeQuick = function(commandStr, getTreePromise) {
-  // console.log('getTreeQuick')
-  // console.log(commandStr)
   var deferred = Q.defer();
   var headless = new HeadlessGit();
   headless.sendCommand(commandStr, deferred);
@@ -107,8 +105,6 @@ var getTreeQuick = function(commandStr, getTreePromise) {
 };
 
 HeadlessGit.prototype.sendCommand = function(value, entireCommandPromise) {
-  // console.log('sendCommand')
-  // console.log(value)
   var deferred = Q.defer();
   var chain = deferred.promise;
   var startTime = new Date().getTime();

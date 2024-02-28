@@ -11,7 +11,6 @@ export class MainPageModuleService {
     }
 
     const filename = path.resolve(process.cwd(), 'src/dist/index.html');
-    // console.log(readFileSync(filename, 'utf8'))
     return readFileSync(filename, 'utf8');
   }
 }

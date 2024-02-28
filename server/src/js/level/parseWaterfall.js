@@ -87,8 +87,6 @@ ParseWaterfall.prototype.expandShortcut = function(commandStr, shortcutMap) {
 };
 
 ParseWaterfall.prototype.processAllInstants = function(commandStr) {
-  // console.log('instantWaterfall')
-  // console.log(this.instantWaterfall)
   this.instantWaterfall.forEach(function(instantCommands) {
     this.processInstant(commandStr, instantCommands);
   }, this);
@@ -97,16 +95,9 @@ ParseWaterfall.prototype.processAllInstants = function(commandStr) {
 ParseWaterfall.prototype.processInstant = function(commandStr, instantCommands) {
   instantCommands.forEach(function(tuple) {
     var regex = tuple[0];
-    // console.log(tuple)
-    // console.log(commandStr)
     var results = regex.exec(commandStr);
-    // console.log('processInstant results')
-    // console.log(results)
     if (results) {
       // this will throw a result because it's an instant
-
-
-      // console.log(tuple)
       tuple[1](results);
     }
   });
