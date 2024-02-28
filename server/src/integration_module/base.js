@@ -1,3 +1,5 @@
+// copied from __tests__/base.js
+
 var Q = require('q');
 
 var HeadlessGit = require('../js/git/headless').HeadlessGit;
