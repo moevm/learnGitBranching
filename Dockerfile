@@ -9,37 +9,25 @@ RUN mkdir -p /app/front
 RUN mkdir -p /app/server
 RUN mkdir -p /app/server/dist
 
-# Install front dependencies
+# Install front dependencies and build front app
 WORKDIR /app/front
-
 COPY ./front ./
-#WORKDIR /app
-#RUN ls -a
-#WORKDIR /app/front
-#RUN ls -a
 RUN ["npm", "install"]
 CMD ["yarn", "gulp", "fastBuild"]
-CMD ["ls", "-a"]
-#RUN cat ./index.html
 
 # Copy front build to server
-CMD ["mv", "/app/front/index.html", "/app/server/dist/index.html"]
-CMD ["mv", "/app/front/build", "/app/server/dist/build"]
-CMD ["mv", "/app/front/assets", "/app/server/dist/assets"]
-RUN ["ls", "-a"]
+CMD ["mv", "/app/front/index.html", "/app/server/dist/src/index.html"]
+CMD ["mv", "/app/front/build", "/app/server/src/dist/build"]
+CMD ["mv", "/app/front/assets", "/app/server/src/dist/assets"]
 
-# Install server dependencies
-WORKDIR /app/server
-COPY /server/package*.json ./
-RUN ["cat", "package.json"]
-RUN ["npm", "install"]
-CMD ["npm", "cache", "clean", "--force"]
+# Delete front source code
+WORKDIR /app
+CMD ["rm", "-rf", "./front"]
 
-# Build app source
+# Install server dependencies and run server app
 WORKDIR /app/server
 COPY ./server ./
 EXPOSE 3000
-RUN ["ls", "-a"]
-#RUN ["npm", "list"]
 RUN ["npm", "install"]
+RUN ["cat", "/app/server/src/dist/index.html"]
 CMD ["npm", "run", "start:dev"]

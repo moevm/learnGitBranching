@@ -47,9 +47,9 @@ var LevelBuilder = Level.extend({
 
     var locale = LocaleStore.getLocale();
     options.level.startDialog = {};
-    // options.level.startDialog[locale] = {
-    //   childViews: intl.getDialog(require('../dialogs/levelBuilder'))
-    // };
+    options.level.startDialog[locale] = {
+      childViews: intl.getDialog(require('../dialogs/levelBuilder'))
+    };
 
     // if we are editing a level our behavior is a bit different
     var editLevelJSON;
