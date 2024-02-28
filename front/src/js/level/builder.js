@@ -266,19 +266,19 @@ var LevelBuilder = Level.extend({
       deferred: whenDoneEditing
     });
     whenDoneEditing.promise
-      .then(function(levelObj) {
-        this.startDialogObj = levelObj;
-      }.bind(this))
-      .fail(function() {
-        // nothing to do, they don't want to edit it apparently
-      })
-      .done(function() {
-        if (command) {
-          command.finishWith(deferred);
-        } else {
-          deferred.resolve();
-        }
-      });
+    .then(function(levelObj) {
+      this.startDialogObj = levelObj;
+    }.bind(this))
+    .fail(function() {
+      // nothing to do, they don't want to edit it apparently
+    })
+    .done(function() {
+      if (command) {
+        command.finishWith(deferred);
+      } else {
+        deferred.resolve();
+      }
+    });
   },
 
   finish: function(command, deferred) {
