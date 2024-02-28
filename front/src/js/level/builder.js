@@ -310,13 +310,13 @@ var LevelBuilder = Level.extend({
         ]
       });
       askForHintView.getPromise()
-        .then(this.defineHint.bind(this))
-        .fail(function() {
-          this.level.hint = {'en_US': ''};
-        }.bind(this))
-        .done(function() {
-          askForHintDeferred.resolve();
-        });
+      .then(this.defineHint.bind(this))
+      .fail(function() {
+        this.level.hint = {'en_US': ''};
+      }.bind(this))
+      .done(function() {
+        askForHintDeferred.resolve();
+      });
     }
 
     if (this.startDialogObj === undefined) {
