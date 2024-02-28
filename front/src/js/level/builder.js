@@ -331,19 +331,19 @@ var LevelBuilder = Level.extend({
         ]
       });
       askForStartView.getPromise()
-        .then(function() {
-          // oh boy this is complex
-          var whenEditedDialog = Q.defer();
-          // the undefined here is the command that doesn't need resolving just yet...
-          this.editDialog(undefined, whenEditedDialog);
-          return whenEditedDialog.promise;
-        }.bind(this))
-        .fail(function() {
-          // if they don't want to edit the start dialog, do nothing
-        })
-        .done(function() {
-          askForStartDeferred.resolve();
-        });
+      .then(function() {
+        // oh boy this is complex
+        var whenEditedDialog = Q.defer();
+        // the undefined here is the command that doesn't need resolving just yet...
+        this.editDialog(undefined, whenEditedDialog);
+        return whenEditedDialog.promise;
+      }.bind(this))
+      .fail(function() {
+        // if they don't want to edit the start dialog, do nothing
+      })
+      .done(function() {
+        askForStartDeferred.resolve();
+      });
     }
 
     chain = chain.done(function() {
