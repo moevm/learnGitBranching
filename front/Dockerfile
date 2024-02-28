@@ -1,15 +1,22 @@
-FROM node:20-alpine
+FROM node:14.20.0-alpine3.16 as build
 
-# Create app directory
-WORKDIR /app
+RUN apk add git --no-cache
+WORKDIR "/src"
+
+COPY . /src
+RUN yarn install && \
+	yarn cache clean
+RUN	yarn gulp build
+
+FROM scratch AS export
+WORKDIR /
+COPY --from=build /src/index.html .
+COPY --from=build /src/build ./build
 
 
-# Install app dependencies
-COPY package*.json ./
-RUN npm install
 
-
-# Build app source
+FROM nginx:stable-alpine
+WORKDIR /usr/share/nginx/html/
 COPY . .
-EXPOSE 3000
-CMD ["npm", "run", "start:dev"]
+# Override the local source with the built artifacts
+COPY --from=export . .
