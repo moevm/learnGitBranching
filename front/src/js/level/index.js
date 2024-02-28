@@ -562,7 +562,7 @@ var Level = Sandbox.extend({
     .fail(function() {
       // nothing to do, we will just close
     })
-    .then(function() {
+    .done(function() {
       GlobalStateActions.changeIsAnimating(false);
       defer.resolve();
     });

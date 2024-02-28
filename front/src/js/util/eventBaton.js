@@ -79,6 +79,7 @@ EventBaton.prototype.passBatonBack = function(name, func, context, args) {
     throw new Error('you are the last baton holder! or i didn\'t find you');
   }
   var toCallObj = listeners[indexBefore];
+
   toCallObj.func.apply(toCallObj.context, args);
 };
 
