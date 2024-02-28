@@ -3,7 +3,7 @@ FROM node:14.20.0-alpine3.16 as build
 RUN apk add git --no-cache
 WORKDIR "/src"
 
-COPY .. /src
+COPY . /src
 RUN yarn install && \
 	yarn cache clean
 RUN	yarn gulp build
