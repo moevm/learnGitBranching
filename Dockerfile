@@ -14,7 +14,6 @@ WORKDIR /app/front
 COPY ./front ./
 RUN npm install
 RUN yarn gulp fastBuild
-RUN cat ./index.html
 
 # Install server dependencies and run server app
 WORKDIR /app/server
