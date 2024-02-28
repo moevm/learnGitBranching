@@ -440,7 +440,6 @@ var SeriesView = BaseView.extend({
 
   click: function(ev) {
     var id = this.getEventID(ev);
-    console.log(id)
     this.navEvents.trigger('clickedID', id);
   }
 });

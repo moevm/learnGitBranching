@@ -1,3 +1,52 @@
+# Изыскания
+Положил в [гугол док](https://docs.google.com/document/d/1-Xe77kEXO49QvLb91VHPTgMhoujn1olq4fV1NpV7jdI/edit)
+
+
+# Как можно проверить работу nestjs приложения?
+
+### 1. Запустить приложение
+```bash
+$ npm run start
+```
+
+### 2. Отправить POST запрос на http://localhost:3000/send-command/ с телом:
+```json
+{
+  "command": "git reset HEAD~1;git checkout pushed;git revert HEAD",
+  "levelType": "rampup",
+  "levelIndex": 3
+}
+```
+
+### 3. Проверить резульаты:
+
+Увидеть тело ответа
+```json
+{
+  "result": true
+}
+```
+Также в консоли будет выведено сообщение вида:
+```
+true
+{json_tree...} // итоговое дерево в json формате
+---------------
+```
+
+### 4. Отправлять комманды, не приводящие к решению
+Будут возвращаться ответы:
+```json
+{
+  "result": false
+}
+```
+Также в консоли будет выводиться сообщение вида (с внесенными изменениями, посланной командой):
+```
+false
+{json_tree...} // текущее дерево в json формате
+---------------
+```
+
 # LearnGitBranching
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?)](https://github.com/pcottle/learnGitBranching/pulls)
@@ -102,7 +151,7 @@ Thus, if you build the app locally, all you have to do in order to run the app i
 
 You can run the most recently built stable image with `docker run -p 8080:80 ghcr.io/pcottle/learngitbranching:main`. Access your environment with at [http://localhost:8080/](<http://localhost:8080/>)
 
-You can build the app and image with the command: `docker build -t ghcr.io/pcottle/learngitbranching:latest`. See the [Makefile](Makefile) for information on how to build locally with docker.
+You can build the app and image with the command: `docker build -t ghcr.io/pcottle/learngitbranching:latest`. See the [Makefile](../Makefile) for information on how to build locally with docker.
 
 ## Some of our amazing contributors
 
