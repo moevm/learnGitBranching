@@ -47,9 +47,9 @@ var LevelBuilder = Level.extend({
 
     var locale = LocaleStore.getLocale();
     options.level.startDialog = {};
-    options.level.startDialog[locale] = {
-      childViews: intl.getDialog(require('../dialogs/levelBuilder'))
-    };
+    // options.level.startDialog[locale] = {
+    //   childViews: intl.getDialog(require('../dialogs/levelBuilder'))
+    // };
 
     // if we are editing a level our behavior is a bit different
     var editLevelJSON;
@@ -266,19 +266,19 @@ var LevelBuilder = Level.extend({
       deferred: whenDoneEditing
     });
     whenDoneEditing.promise
-    .then(function(levelObj) {
-      this.startDialogObj = levelObj;
-    }.bind(this))
-    .fail(function() {
-      // nothing to do, they don't want to edit it apparently
-    })
-    .done(function() {
-      if (command) {
-        command.finishWith(deferred);
-      } else {
-        deferred.resolve();
-      }
-    });
+      .then(function(levelObj) {
+        this.startDialogObj = levelObj;
+      }.bind(this))
+      .fail(function() {
+        // nothing to do, they don't want to edit it apparently
+      })
+      .done(function() {
+        if (command) {
+          command.finishWith(deferred);
+        } else {
+          deferred.resolve();
+        }
+      });
   },
 
   finish: function(command, deferred) {
@@ -310,13 +310,13 @@ var LevelBuilder = Level.extend({
         ]
       });
       askForHintView.getPromise()
-      .then(this.defineHint.bind(this))
-      .fail(function() {
-        this.level.hint = {'en_US': ''};
-      }.bind(this))
-      .done(function() {
-        askForHintDeferred.resolve();
-      });
+        .then(this.defineHint.bind(this))
+        .fail(function() {
+          this.level.hint = {'en_US': ''};
+        }.bind(this))
+        .done(function() {
+          askForHintDeferred.resolve();
+        });
     }
 
     if (this.startDialogObj === undefined) {
@@ -331,19 +331,19 @@ var LevelBuilder = Level.extend({
         ]
       });
       askForStartView.getPromise()
-      .then(function() {
-        // oh boy this is complex
-        var whenEditedDialog = Q.defer();
-        // the undefined here is the command that doesn't need resolving just yet...
-        this.editDialog(undefined, whenEditedDialog);
-        return whenEditedDialog.promise;
-      }.bind(this))
-      .fail(function() {
-        // if they don't want to edit the start dialog, do nothing
-      })
-      .done(function() {
-        askForStartDeferred.resolve();
-      });
+        .then(function() {
+          // oh boy this is complex
+          var whenEditedDialog = Q.defer();
+          // the undefined here is the command that doesn't need resolving just yet...
+          this.editDialog(undefined, whenEditedDialog);
+          return whenEditedDialog.promise;
+        }.bind(this))
+        .fail(function() {
+          // if they don't want to edit the start dialog, do nothing
+        })
+        .done(function() {
+          askForStartDeferred.resolve();
+        });
     }
 
     chain = chain.done(function() {

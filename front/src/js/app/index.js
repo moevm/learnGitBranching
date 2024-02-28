@@ -197,8 +197,9 @@ var initDemo = function(sandbox) {
     });
   }
 
+  let withLevelId = false;
   if (params.level_id) {
-    levelDropdown.navEvents.trigger('clickedID', params.level_id);
+    withLevelId = true;
   }
   else if (params.hasOwnProperty('demo')) {
     commands = [
@@ -296,6 +297,10 @@ var initDemo = function(sandbox) {
     sandbox.mainVis.customEvents.on('gitEngineReady', function() {
       eventBaton.trigger('commandSubmitted', command);
     });
+  }
+
+  if (withLevelId) {
+    levelDropdown.navEvents.trigger('clickedID', params.level_id);
   }
 
 };

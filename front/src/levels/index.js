@@ -8,7 +8,7 @@ request.open("GET", "http://localhost:3000/get-levels/", false);
 request.send(null);
 
 if (request.status === 200) {
-  console.log(request.responseText);
+  // console.log(request.responseText);
 }
 
 const res = JSON.parse(request.responseText);

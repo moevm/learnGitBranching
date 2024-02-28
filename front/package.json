@@ -6,13 +6,16 @@
   "author": "Peter Cottle <petermcottle@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "gulp test"
+    "installl": "npm install; yarn gulp fastBuild; rm -rf ./node_modules"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/pcottle/learnGitBranching"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-decorators": "7.23.2",
+    "@babel/plugin-transform-runtime": "7.23.2",
+    "@babel/preset-env": "7.23.2",
     "@babel/preset-react": "^7.16.7",
     "babelify": "^10.0.0",
     "browserify": "^17.0.0",

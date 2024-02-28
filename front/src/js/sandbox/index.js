@@ -482,8 +482,6 @@ var Sandbox = Backbone.View.extend({
   },
 
   helpDialog: function(command, deferred) {
-    console.log(command)
-    console.log(deferred)
     var helpDialog = new MultiView({
       childViews: intl.getDialog(require('../dialogs/sandbox'))
     });

@@ -448,9 +448,6 @@ var Level = Sandbox.extend({
     }
 
     var current = this.mainVis.gitEngine.printTree();
-    console.log(JSON.stringify(command))
-    console.log(command.get('rawStr'))
-    console.log(command)
     var solved = TreeCompare.dispatchFromLevel(this.level, command.get('rawStr'));
 
     if (!solved) {
@@ -568,13 +565,7 @@ var Level = Sandbox.extend({
     .then(function() {
       GlobalStateActions.changeIsAnimating(false);
       defer.resolve();
-    })
-    .then(
-      () => {
-        console.log('gaygaygaygay')
-        window.location.replace('https://bobbyhadz.com')
-      }
-      );
+    });
   },
 
   die: function() {

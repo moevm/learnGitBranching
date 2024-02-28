@@ -7,27 +7,23 @@ WORKDIR /app
 RUN mkdir -p /app/front
 # Create server directory
 RUN mkdir -p /app/server
-RUN mkdir -p /app/server/dist
+RUN mkdir -p /app/server/src/dist
 
 # Install front dependencies and build front app
 WORKDIR /app/front
 COPY ./front ./
-RUN ["npm", "install"]
-CMD ["yarn", "gulp", "fastBuild"]
-
-# Copy front build to server
-CMD ["mv", "/app/front/index.html", "/app/server/dist/src/index.html"]
-CMD ["mv", "/app/front/build", "/app/server/src/dist/build"]
-CMD ["mv", "/app/front/assets", "/app/server/src/dist/assets"]
-
-# Delete front source code
-WORKDIR /app
-CMD ["rm", "-rf", "./front"]
+RUN npm install
+RUN yarn gulp fastBuild
+RUN cat ./index.html
 
 # Install server dependencies and run server app
 WORKDIR /app/server
 COPY ./server ./
-EXPOSE 3000
+
+# Copy front build to server
+RUN ["mv", "/app/front/index.html", "/app/server/src/dist/index.html"]
+RUN ["mv", "/app/front/build", "/app/server/src/dist/build"]
+RUN ["mv", "/app/front/assets", "/app/server/src/dist/assets"]
+EXPOSE 3000/tcp
 RUN ["npm", "install"]
-RUN ["cat", "/app/server/src/dist/index.html"]
-CMD ["npm", "run", "start:dev"]
+#RUN ["npm", "run", "start:dev"]
