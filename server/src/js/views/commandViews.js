@@ -138,6 +138,7 @@ var CommandPromptView = Backbone.View.extend({
     // try.github.com also has this, so I'm assuming those engineers gave up as
     // well...
     var text = $('#commandTextField').val();
+
     // Alright so we have our initial value for what we want the
     // command line to contain. We need to next split into the
     // parse with the cursor and without

@@ -78,6 +78,7 @@ var CommandBuffer = Backbone.Model.extend({
 
   processCommand: function(command) {
     command.set('status', 'processing');
+
     var deferred = Q.defer();
     deferred.promise.then(function() {
       this.setTimeout();
