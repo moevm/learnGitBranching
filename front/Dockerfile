@@ -17,6 +17,6 @@ COPY --from=build /src/build ./build
 
 FROM nginx:stable-alpine
 WORKDIR /usr/share/nginx/html/
-COPY .. .
+COPY . .
 # Override the local source with the built artifacts
-COPY --from=export .. .
+COPY --from=export . .
