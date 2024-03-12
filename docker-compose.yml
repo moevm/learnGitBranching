@@ -1,7 +1,34 @@
 version: '3'
 
 services:
-  main:
+  nginx:
+    image: nginx
+    container_name: nginx_proxy
+    volumes:
+      - ./cert.pem:/etc/nginx/ssl/fullchain.pem
+      - ./key.pem:/etc/nginx/ssl/privkey.pem
+      - ./config/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 80:80
+      - 443:443
+
+  python_app:
+    build:
+      context: ./lti_auth
+      dockerfile: PythonDockerfile
+    image: python:3.12
+    container_name: python_app
+    env_file:
+      - .env
+
+    # порт запуска приложения захардкожен тут и в ngiinx.conf
+    # менять нет смысла, если хочется достучаться снаружи, просто выставляем нужный порт в директиву porst
+    command: [ "uvicorn", "lti_auth.app:app", "--host", "0.0.0.0", "--port", "8001", "--ssl-keyfile", "../key.pem", "--ssl-certfile", "../cert.pem" ]
+    restart: always
+    ports:
+      - 8008:8001
+
+  js_app:
     container_name: lean_git_branching
     build:
       context: .
@@ -10,3 +37,18 @@ services:
       - "3000:3000"
     command: npm run start:dev
     restart: always
+
+  mongo:
+    image: mongo:latest
+    env_file:
+      - .env
+      - .env.example
+    ports:
+      - 27018:27017
+    volumes:
+      - ~/mongodata:/data/db
+
+volumes:
+  presentation_files:
+  redis_data:
+  flower_data:

@@ -23,27 +23,32 @@ class CommandsHelperBarView extends React.Component {
   }
 
   getItems() {
-    return [{
-      text: intl.str('command-helper-bar-levels'),
-      onClick: function() {
-        this.fireCommand('levels');
-      }.bind(this),
-    }, {
-      text: intl.str('command-helper-bar-solution'),
-      onClick: function() {
-        this.fireCommand('show solution');
-      }.bind(this),
-    }, {
+    return [
+    //   {
+    //   text: intl.str('command-helper-bar-levels'),
+    //   onClick: function() {
+    //     this.fireCommand('levels');
+    //   }.bind(this),
+    // },
+    //   {
+    //   text: intl.str('command-helper-bar-solution'),
+    //   onClick: function() {
+    //     this.fireCommand('show solution');
+    //   }.bind(this),
+    // },
+      {
       text: intl.str('command-helper-bar-reset'),
       onClick: function() {
         this.fireCommand('reset');
       }.bind(this),
-    }, {
-      text: intl.str('command-helper-bar-undo'),
-      onClick: function() {
-        this.fireCommand('undo');
-      }.bind(this),
-    }, {
+    },
+    //   {
+    //   text: intl.str('command-helper-bar-undo'),
+    //   onClick: function() {
+    //     this.fireCommand('undo');
+    //   }.bind(this),
+    // },
+      {
       text: intl.str('command-helper-bar-objective'),
       onClick: function() {
         this.fireCommand('objective');

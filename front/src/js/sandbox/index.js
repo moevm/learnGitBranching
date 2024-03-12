@@ -172,7 +172,7 @@ var Sandbox = Backbone.View.extend({
           { id: desiredID }
         )
       );
-      Main.getEventBaton().trigger('commandSubmitted', 'levels');
+      // Main.getEventBaton().trigger('commandSubmitted', 'levels');
 
       command.set('status', 'error');
       deferred.resolve();
@@ -259,13 +259,13 @@ var Sandbox = Backbone.View.extend({
     );
     command.finishWith(deferred);
   },
-
+  withLevel: true,
   processSandboxCommand: function(command, deferred) {
     // I'm tempted to do cancel case conversion, but there are
     // some exceptions to the rule
     var commandMap = {
       'reset solved': this.resetSolved,
-      'undo': this.undo,
+      // 'undo': this.undo,
       'help': this.helpDialog,
       'reset': this.reset,
       'delay': this.delay,
@@ -273,7 +273,7 @@ var Sandbox = Backbone.View.extend({
       'exit level': this.exitLevel,
       'level': this.startLevel,
       'sandbox': this.exitLevel,
-      'levels': this.showLevels,
+      // 'levels': this.showLevels,
       'mobileAlert': this.mobileAlert,
       'build level': this.buildLevel,
       'export tree': this.exportTree,
@@ -283,11 +283,14 @@ var Sandbox = Backbone.View.extend({
       'importLevelNow': this.importLevelNow,
       'share permalink': this.sharePermalink,
     };
-
+    if (!this.withLevel) {
+      delete commandMap['level']
+    }
     var method = commandMap[command.get('method')];
     if (!method) { throw new Error('no method for that wut'); }
 
     method.apply(this, [command, deferred]);
+    this.withLevel = false;
   },
 
   hide: function() {

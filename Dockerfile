@@ -18,6 +18,7 @@ RUN yarn gulp fastBuild
 # Install server dependencies and run server app
 WORKDIR /app/server
 COPY ./server ./
+COPY ./.env ./
 
 # Copy front build to server
 RUN ["mv", "/app/front/index.html", "/app/server/src/dist/index.html"]

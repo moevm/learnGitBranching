@@ -156,7 +156,7 @@ var regexMap = {
   'exit level': /^exit level($|\s)/,
   'sandbox': /^sandbox($|\s)/,
   'level': /^level\s?([a-zA-Z0-9]*)/,
-  'levels': /^levels($|\s)/,
+  // 'levels': /^levels($|\s)/,
   'mobileAlert': /^mobile alert($|\s)/,
   'build level': /^build +level\s?([a-zA-Z0-9]*)$/,
   'export tree': /^export +tree$/,
@@ -164,7 +164,7 @@ var regexMap = {
   'importLevelNow': /^importLevelNow($|\s)/,
   'import tree': /^import +tree$/,
   'import level': /^import +level$/,
-  'undo': /^undo($|\s)/,
+  // 'undo': /^undo($|\s)/,
   'share permalink': /^share( +permalink)?$/
 };
 

@@ -80,9 +80,9 @@ var validateLevel = function(level) {
   level = level || {};
   var requiredFields = [
     'name',
-    'goalTreeString',
+    // 'goalTreeString',
     //'description',
-    'solutionCommand'
+    // 'solutionCommand'
   ];
 
   requiredFields.forEach(function(field) {
@@ -97,9 +97,12 @@ var validateLevel = function(level) {
  * Unpack the level sequences.
  */
 Object.keys(levelSequences).forEach(function(levelSequenceName) {
+  console.log(levelSequenceName)
+  console.log(levelSequences)
   var levels = levelSequences[levelSequenceName];
+  console.log(levels)
   _sequences.push(levelSequenceName);
-  if (!levels || !levels.length) {
+  if (!levels) {
     throw new Error('no empty sequences allowed');
   }
 

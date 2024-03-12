@@ -1,11 +1,13 @@
 let _ = require('underscore');
+const {env} = require("../env");
 
 // static class...
 let TreeCompare = {};
 
 TreeCompare.dispatchFromLevel = function(levelBlob, rawCommandStr) {
   const request = new XMLHttpRequest();
-  request.open("POST", "http://localhost:3000/dispatch-from-level/", false);
+  const url = `https://${env.NGINX_HOST_NAME}${env.NGINX_HOST_PORT ? `:${env.NGINX_HOST_PORT}` : ''}/js_app/dispatch-from-level/`
+  request.open("POST", url, false);
   request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
   request.send(JSON.stringify({
     'levelType': levelBlob.levelType,

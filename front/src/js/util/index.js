@@ -38,9 +38,14 @@ exports.splitTextCommand = function(value, func, context) {
 };
 
 exports.genParseCommand = function(regexMap, eventName) {
+  let withLevel = true;
   return function(str) {
     var method;
     var regexResults;
+
+    if (!withLevel && regexMap['level']) {
+      delete regexMap['level']
+    }
 
     Object.keys(regexMap).forEach(function(_method) {
       var results = regexMap[_method].exec(str);
@@ -49,6 +54,8 @@ exports.genParseCommand = function(regexMap, eventName) {
         regexResults = results;
       }
     });
+
+    withLevel = false;
 
     return (!method) ? false : {
       toSet: {

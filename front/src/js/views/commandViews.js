@@ -12,7 +12,7 @@ const allCommands = Object.keys(getAllCommands());
 // Lets push a few commands up in the suggestion order,
 // which overrides the order from the exportj
 const autoCompleteSuggestionOrder = [
-  'levels', // above "level"
+  // 'levels', // above "level"
   'help', // above help level since you might not be in a level
   'show solution', // above show goal since you start with a goal view
   'reset', // over reset solved
