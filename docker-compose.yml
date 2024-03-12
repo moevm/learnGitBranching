@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  main:
+  js_web:
     container_name: lean_git_branching
     build:
       context: .
@@ -10,3 +10,44 @@ services:
       - "3000:3000"
     command: npm run start:dev
     restart: always
+
+  python_web:
+    extends:
+      file: docker-compose.yml
+      service: web
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./app:/usr/src/project/app
+
+  python_marks_worker:
+    extends:
+      file: docker-compose.yml
+      service: worker
+    volumes:
+      - ./app:/usr/src/project/app
+
+  celery_dashboard:
+    extends:
+      file: docker-compose.yml
+      service: worker-dashboard
+    command: celery --broker=${REDIS_URL} flower --port=5555 --persistent=True
+    ports:
+      - "5555:5555"
+
+  redis:
+    extends:
+      file: docker-compose.yml
+      service: redis
+
+  mongodb:
+    extends:
+      file: docker-compose.yml
+      service: mongodb
+    ports:
+      - "27017:27017"
+
+volumes:
+  presentation_files:
+  redis_data:
+  flower_data:

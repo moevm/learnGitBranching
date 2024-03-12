@@ -1,0 +1,114 @@
+:root {
+    --main-color: #01549B;
+    --accent-color: #0275D8;
+    --text-color: #373A3C;
+    --footer-color: #80878D;
+    --background-color: #E5E5E5;
+    --bright-color: #FFFFFF;
+    --border-color: #CCCCCC;
+    --username-color: #FBFBFB;
+    --criteria-color: #EDEDED;
+}
+
+body {
+    font-family: Helvetica Neue, serif;
+    font-style: normal;
+
+    overflow: hidden;
+}
+
+
+.h-box {
+    margin-left: 1rem !important;
+    margin-right: 1rem !important;
+}
+
+.v-box {
+    margin-top: .5rem !important;
+    margin-bottom: .5rem !important;
+}
+
+.h-box > * + * {
+    margin-left: .5rem !important;
+}
+
+.v-box > * + * {
+    margin-top: .5rem !important;
+}
+
+
+.header {
+    background: var(--main-color);
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+.holder {
+    background: var(--background-color);
+    height: 95vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.footer {
+    background: var(--footer-color);
+    height: 5vh;
+}
+
+.blue_button {
+    background: var(--main-color) !important;
+    color: var(--bright-color) !important;
+}
+
+.pale_button {
+    background: var(--bright-color);
+    border: 1px solid var(--border-color);
+    box-sizing: border-box;
+    border-radius: 4px;
+}
+
+
+.texteous {
+    color: var(--text-color);
+}
+
+.ins {
+    cursor: default;
+}
+
+.inputous {
+    background: var(--bright-color);
+    border: 1px solid var(--border-color);
+    box-sizing: border-box;
+    border-radius: 4px;
+}
+
+.linked {
+    display: block;
+    text-align: center;
+}
+
+.header-linked, .header-linked:visited {
+    display: block;
+    color: var(--bright-color);
+}
+
+.header-linked:hover {
+    display: block;
+    color: var(--border-color);
+}
+
+.dropdown-item:active {
+    background-color: var(--footer-color) !important;
+}
+
+
+#user_info {
+    display: inline-flex;
+    color: var(--username-color);
+}
+
+#user_info:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
