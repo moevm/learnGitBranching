@@ -7,7 +7,9 @@ import {levelsState} from "../git.service";
 import * as util from "../../../js/util"
 import {Command} from "../../../js/models/commandModel"
 import TreeCompare from "../../../js/graph/treeCompare";
-
+import * as axios from "axios";
+import * as https from "node:https";
+import {env} from "../../env";
 
 const _ = require('underscore');
 const state = {}
@@ -21,12 +23,12 @@ export class DispatchFromLevelModuleService {
     const levelType = dispatchFromLevelDto.levelType
     const userId = dispatchFromLevelDto.userId
     const strCommand = dispatchFromLevelDto.rawCommandStr
+    const jwtToken = dispatchFromLevelDto.jwtToken
 
-    const level = levelSequences[levelType][levelIndex]
+    const level = levelSequences[levelType][levelIndex - 1]
     const userState = state[userId]
 
     let headless = userState ? userState[level.name.en_US] : undefined
-    // console.log(headless)
     if (!headless) {
       headless = new HeadlessGit();
       if (!userState) {
@@ -54,12 +56,17 @@ export class DispatchFromLevelModuleService {
     let res = await TreeCompare.dispatchFromLevel(level, current);
 
     // -----------------------------------------------------------
-    // выводим текущее состояние дерева для данного пользователя и результат проверки
+    // выводим дерево из решения, текущее состояние дерева для данного пользователя и результат проверки
+    console.log(level.goalTreeString)
     console.log(headless.gitEngine.printTree())
     console.log(res)
 
     // -----------------------------------------------------------
     // возвращаем ответ
+
+    if (res) {
+      await this.sendMark(1, dispatchFromLevelDto.jwtToken)
+    }
 
     return {
       'levelComplete': res,
@@ -67,5 +74,19 @@ export class DispatchFromLevelModuleService {
       'nextLevelType': dispatchFromLevelDto.levelType,
       'nextLevelIndex': dispatchFromLevelDto.levelIndex + 1,
     }
+  }
+
+  async sendMark(mark, jwtToken){
+    const data = {mark}
+    console.log('send mark')
+    await axios.post('https://python_app:8001/python_app/v1/send-score/', data, {
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false
+      }),
+      headers: {
+        'Cookie': `${env.JWT_COOKIE_NAME}=${jwtToken}`,
+      },
+    })
+
   }
 }

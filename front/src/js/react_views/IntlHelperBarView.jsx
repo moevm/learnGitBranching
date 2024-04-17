@@ -24,6 +24,7 @@ class IntlHelperBarView extends React.Component{
   }
 
   getItems() {
+    return []
     return [{
       text: 'Git Branching',
       testID: 'english',

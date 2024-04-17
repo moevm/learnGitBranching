@@ -6,6 +6,7 @@ import * as path from "node:path";
 export class MainPageModuleService {
 
   async getMainPage(mainPageDto) {
+    console.log(mainPageDto)
     if (!mainPageDto.level_id) {
       throw new NotFoundException()
     }

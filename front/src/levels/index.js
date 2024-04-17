@@ -2,8 +2,11 @@
 // a sequence proceed in the order listed here
 
 
+const {env} = require("../js/env");
 const request = new XMLHttpRequest();
-request.open("GET", "http://localhost:3000/get-levels/", false);
+const url = `https://${env.NGINX_HOST_NAME}${env.NGINX_HOST_PORT ? `:${env.NGINX_HOST_PORT}` : ''}/js_app/get-levels/`
+console.log(url)
+request.open("GET", url, false);
 
 request.send(null);
 

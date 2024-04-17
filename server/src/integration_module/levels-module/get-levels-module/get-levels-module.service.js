@@ -1,25 +1,37 @@
 import { Injectable } from '@nestjs/common';
 import { levelSequences, sequenceInfo } from '../../../levels';
+import LevelStore from "../../../js/stores/LevelStore";
 
 @Injectable()
 export class GetLevelsModuleService {
+  async getLevels(level_id, is_success) {
+    const level = LevelStore.getLevel(level_id)
+    const levelNumber = level_id.match(/\d+/g)[0]
+    const levelType = level_id.match(/[a-zA-Z]+/g)[0]
 
-  async getLevels() {
-    let sequences = JSON.parse(JSON.stringify(levelSequences))
-    let info = JSON.parse(JSON.stringify(sequenceInfo))
+    const jsonLevel = JSON.parse(JSON.stringify(level))
+    const toAnalyze = jsonLevel.solutionCommand.replace(/^;|;$/g, '')
 
-    for (let sequence of Object.keys(sequences)) {
-      for (let i = 0; i < sequences[sequence].length; i++) {
-        let level = sequences[sequence][i]
-        level.levelIndex = i
-        level.levelType = sequence
-      }
-    }
+    jsonLevel.best = toAnalyze.split(';').length
+    jsonLevel.levelIndex = levelNumber
+    jsonLevel.levelType = levelType
+    jsonLevel.isSuccess = is_success
+
+    // delete jsonLevel.goalTreeString
+    delete jsonLevel.solutionCommand
 
     let res = {
-      'levelSequences': sequences,
-      'sequenceInfo': info,
+      'levelSequences': {},
+      'sequenceInfo': {}
     }
+
+    res['levelSequences']['intro'] = [jsonLevel]
+
+    let info = JSON.parse(JSON.stringify(sequenceInfo))
+    console.log(levelType)
+    console.log(levelNumber)
+
+    res['sequenceInfo']['intro'] = info[levelType]
 
     return res
   }

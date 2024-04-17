@@ -1,5 +1,7 @@
-import { Controller, Dependencies, Get } from '@nestjs/common';
+import {Bind, Controller, Dependencies, Get, Req} from '@nestjs/common';
 import {GetLevelsModuleService} from "./get-levels-module.service";
+import {env} from "../../env";
+import * as jwt from 'jsonwebtoken'
 
 
 @Controller()
@@ -10,7 +12,14 @@ export class GetLevelsModuleController {
   }
 
   @Get('get-levels')
-  getLevels() {
-    return this.getLevelsService.getLevels()
+  @Bind(Req())
+  getLevels(request) {
+    const jwt_token = request.cookies[env.JWT_COOKIE_NAME]
+    const decoded = jwt.verify(jwt_token, env.JWT_SECRET)
+
+    const task_id = decoded[env.JWT_TASK_ID_PARAM_NAME]
+    const is_success = decoded[env.JWT_IS_SUCCESS_PARAM_NAME]
+
+    return this.getLevelsService.getLevels(task_id, is_success)
   }
 }

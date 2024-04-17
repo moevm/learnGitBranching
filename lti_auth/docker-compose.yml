@@ -1,74 +1,36 @@
-version: '2'
-
+version: '3.1'
 services:
-  web:
-    build: .
-    image: slides_checker_base_image
-    restart: always
-    ports:
-      - "${WEB_PORT:-8080}:8080"
-    depends_on:
-      - mongodb
-      - worker
-    env_file:
-      - .env
-    environment:
-      - PYTHONUNBUFFERED=1
-      - PYTHONIOENCODING=UTF-8
-      - CELERY_BROKER_URL=${REDIS_URL}
-      - CELERY_RESULT_BACKEND=${REDIS_URL}
-    volumes:
-      - presentation_files:/usr/src/project/files/
-      - "/etc/timezone:/etc/timezone:ro"
-      - "/etc/localtime:/etc/localtime:ro"
+    nginx:
+        image: nginx
+        container_name: nginx_proxy
+        volumes:
+            - ./cert.pem:/etc/nginx/ssl/fullchain.pem
+            - ./key.pem:/etc/nginx/ssl/privkey.pem
+            - ./config/nginx.conf:/etc/nginx/nginx.conf
+        ports:
+            - 80:80
+            - 443:443
+    python_app:
+        build:
+            context: ./
+            dockerfile: PythonDockerfile
+        image: python:3.12
+        container_name: python_app
+        env_file:
+            - .env
+            - .env.example
 
-  worker:
-    image: slides_checker_base_image
-    restart: always
-    command: celery --app=app.tasks.celery worker -n celery@worker --beat -Q ${CELERY_QUERIES} --loglevel=info
-    environment:
-      - CELERY_BROKER_URL=${REDIS_URL}
-      - CELERY_RESULT_BACKEND=${REDIS_URL}
-    depends_on:
-      - redis
-      - mongodb
-    volumes:
-      - presentation_files:/usr/src/project/files/
-      - "/etc/timezone:/etc/timezone:ro"
-      - "/etc/localtime:/etc/localtime:ro"
+        # порт запуска приложения захардкожен тут и в ngiinx.conf
+        # менять нет смысла, если хочется достучаться снаружи, просто выставляем нужный порт в директиву porst
+        command:  ["uvicorn", "lti_auth.app:app", "--host", "0.0.0.0", "--port", "8001", "--ssl-keyfile", "../key.pem", "--ssl-certfile", "../cert.pem"]
+        restart: always
+        ports:
+            - 8008:8001
 
-  worker-dashboard:
-    image: slides_checker_base_image
-    command: celery --broker=${REDIS_URL} flower --port=${FLOWER_PORT} --url_prefix=${FLOWER_PREFIX} --basic_auth=${FLOWER_AUTH} --persistent=True
-    ports:
-      - "${FLOWER_PORT}:5555"
-    environment:
-      - SECRET_KEY=${FLOWER_SECRET_KEY}
-      - CELERY_BROKER=${REDIS_URL}
-      - CELERY_BACKEND=${REDIS_URL}
-    volumes:
-      - flower_data:/etc/db/
-      - "/etc/timezone:/etc/timezone:ro"
-      - "/etc/localtime:/etc/localtime:ro"
-    depends_on:
-      - worker
-      - redis
-
-  redis:
-    image: redis:6-alpine
-    restart: always
-    volumes:
-      - redis_data:/data
-
-  mongodb:
-    image: mongo:4.0.17-xenial
-    restart: always
-    command:
-      - '--wiredTigerCacheSizeGB=${MONGODB_CACHE_SIZE:-1}'
-    volumes:
-      - ../slides_checker_mongo_data:/data/db
-
-volumes:
-  presentation_files:
-  redis_data:
-  flower_data:
+    mongo:
+        image: mongo:latest
+        env_file:
+            - .env
+            - .env.example
+        ports:
+            - 27018:27017
