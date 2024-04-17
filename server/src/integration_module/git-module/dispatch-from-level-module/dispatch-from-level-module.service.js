@@ -84,7 +84,7 @@ export class DispatchFromLevelModuleService {
         rejectUnauthorized: false
       }),
       headers: {
-        'Cookie': `${env.JWT_COOKIE_NAME}=${jwtToken}`,
+        'Cookie': `${process.env.JWT_COOKIE_NAME}=${jwtToken}`,
       },
     })
 

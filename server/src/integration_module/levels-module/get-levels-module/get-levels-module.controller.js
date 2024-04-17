@@ -14,11 +14,11 @@ export class GetLevelsModuleController {
   @Get('get-levels')
   @Bind(Req())
   getLevels(request) {
-    const jwt_token = request.cookies[env.JWT_COOKIE_NAME]
-    const decoded = jwt.verify(jwt_token, env.JWT_SECRET)
+    const jwt_token = request.cookies[process.env.JWT_COOKIE_NAME]
+    const decoded = jwt.verify(jwt_token, process.env.JWT_SECRET)
 
-    const task_id = decoded[env.JWT_TASK_ID_PARAM_NAME]
-    const is_success = decoded[env.JWT_IS_SUCCESS_PARAM_NAME]
+    const task_id = decoded[process.env.JWT_TASK_ID_PARAM_NAME]
+    const is_success = decoded[process.env.JWT_IS_SUCCESS_PARAM_NAME]
 
     return this.getLevelsService.getLevels(task_id, is_success)
   }
