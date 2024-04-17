@@ -15,9 +15,7 @@ class LtiMarksService:
         provider = await self._get_provider(pass_back_params=pass_back_params)
 
         res: OutcomeResponse = provider.post_read_result()
-        if res:
-            return float(res.score)
-        return None
+        return float(res.score) if res.score else None
 
     async def _get_provider(self, pass_back_params: LtiPassBackParams):
         consumer_key = pass_back_params.oauth_consumer_key
