@@ -45,8 +45,8 @@ services:
       - .env.example
     ports:
       - 27018:27017
-#    volumes:
-#      - ~/mongodata:/data/db
+    volumes:
+      - ~/mongodata:/data/db
 
 volumes:
   presentation_files:
