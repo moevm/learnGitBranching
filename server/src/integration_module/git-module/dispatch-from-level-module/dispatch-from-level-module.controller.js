@@ -14,15 +14,15 @@ export class DispatchFromLevelModuleController {
   @Post('dispatch-from-level')
   @Bind(Req(), Body())
   resetLevel(request, dispatchFromLevelDto) {
-    const jwt_token = request.cookies[env.JWT_COOKIE_NAME]
-    const decoded = jwt.verify(jwt_token, env.JWT_SECRET)
-    const task_id = decoded[env.JWT_TASK_ID_PARAM_NAME]
+    const jwt_token = request.cookies[process.env.JWT_COOKIE_NAME]
+    const decoded = jwt.verify(jwt_token, process.env.JWT_SECRET)
+    const task_id = decoded[process.env.JWT_TASK_ID_PARAM_NAME]
     const levelNumber = task_id.match(/\d+/g)[0]
     const levelType = task_id.match(/[a-zA-Z]+/g)[0]
 
     dispatchFromLevelDto.levelIndex = levelNumber
     dispatchFromLevelDto.levelType = levelType
-    dispatchFromLevelDto.userId = decoded[env.JWT_USER_ID_PARAM_NAME]
+    dispatchFromLevelDto.userId = decoded[process.env.JWT_USER_ID_PARAM_NAME]
     dispatchFromLevelDto.jwtToken = jwt_token
 
     return this.dispatchFromLevelService.dispatchFromLevel(dispatchFromLevelDto)
