@@ -19,11 +19,13 @@ var gJasmine = require('gulp-jasmine');
 var { minify } = require('html-minifier');
 var { SpecReporter } = require('jasmine-spec-reporter');
 var gJshint = require('gulp-jshint');
+var replace = require('gulp-replace');
 
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var browserify = require('browserify');
 var babelify = require('babelify');
+const {env} = require("./src/js/env");
 
 _.templateSettings.interpolate = /\{\{(.+?)\}\}/g;
 _.templateSettings.escape = /\{\{\{(.*?)\}\}\}/g;
@@ -147,7 +149,13 @@ var jshint = function() {
 };
 
 var ifyBuild = function() {
+  console.log(process.env)
+  let envHost = process.env.NGINX_HOST_NAME
+  let envPort = process.env.NGINX_HOST_PORT
+
   return getBundle()
+    .pipe(replace(/env\.NGINX_HOST_NAME/g, `'${envHost}'`))
+    .pipe(replace(/env\.NGINX_HOST_PORT/g, envPort ? `'${envPort}'` : 'false'))
     .pipe(dest(destDir));
 };
 

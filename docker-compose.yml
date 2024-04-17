@@ -30,9 +30,13 @@ services:
 
   js_app:
     container_name: lean_git_branching
+    env_file:
+      - .env
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - NGINX_HOST_NAME=${NGINX_HOST_NAME}
     ports:
       - "3000:3000"
     command: npm run start:dev
@@ -45,8 +49,8 @@ services:
       - .env.example
     ports:
       - 27018:27017
-    volumes:
-      - ~/mongodata:/data/db
+#    volumes:
+#      - ~/mongodata:/data/db
 
 volumes:
   presentation_files:

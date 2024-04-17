@@ -13,7 +13,9 @@ RUN mkdir -p /app/server/src/dist
 WORKDIR /app/front
 COPY ./front ./
 RUN npm install
-RUN yarn gulp fastBuild
+ARG NGINX_HOST_NAME
+ENV NGINX_HOST_NAME $NGINX_HOST_NAME
+RUN NGINX_HOST_NAME=$NGINX_HOST_NAME yarn gulp fastBuild
 
 # Install server dependencies and run server app
 WORKDIR /app/server
