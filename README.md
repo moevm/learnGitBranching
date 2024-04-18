@@ -27,7 +27,7 @@
  - JWT_TASK_ID_PARAM_NAME - название параметра в payload `jwt` токена для `id` упражнения
  - JWT_USER_ID_PARAM_NAME - название параметра в payload `jwt` токена для `lms_user_id` пользователя
  - JWT_IS_TRIED_PARAM_NAME - название параметра в payload `jwt` токена для отображения информации о том, что пользователь ранее уже успешно решил данное упражнение
- - NGINX_HOST_NAME - хост в `url`, с которого редиректит `nginx` (необходимо сервису `lti_auth` для замены хоста в `url`, по которому перенаправляет запрос `nginx`, чтобы успешно проходить проверку `lti-запроса`)
+ - NGINX_HOST_NAME - хост в `url`, с которого редиректит `nginx` (необходимо сервису `lti_auth` для замены хоста в `url`, по которому перенаправляет запрос `nginx`, чтобы успешно проходить проверку `lti-запроса`). Например, чтобы локально тестировать, указывать в переменной `localhost`, и в адресе сервиса в `moodle` также указывать url через `localhost`
  - SESSION_SECRET_KEY - секрет, который мы кладём в moodle (по дефолту `secretkey`). Должен быть только из букв и цифр
  - SESSION_PUBLIC_KEY - публичный ключ, который мы кладем в moodle (по дефолту `publickey`). Должен быть только из букв и цифр
 
@@ -45,3 +45,10 @@
 2. `python -m ruff format src`
 3. `python -m mypy --install-types --non-interactive --show-error-context --show-column-numbers --pretty src`
 4. `python -m deptry src` - игнорим `python-multipart`, он нужен для `fastapi`
+
+
+# Подключение к moodle
+
+В nginx задан url для `lti_auth` через суффикс `/python_app/`. То есть, например, локально мы хотим сходить в наш `lti_auth` - для этого мы должны прописать url `https://localhost/python_app/<some_python_uri>/`
+
+В приложении `lti_auth` реализована ручка `/public/v1/lti/`. Именно эту ручку нужно вставлять в moodle, вместе с хостом и префиксом приложения. Например, локально получится `https://localhost/python_app/public/v1/lti/`
