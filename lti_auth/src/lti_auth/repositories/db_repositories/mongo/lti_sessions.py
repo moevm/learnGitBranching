@@ -12,7 +12,6 @@ class LtiSessionsMongoRepository(LtiSessionsRepositoryContract):
         self._consumers_collection = consumers_collection
 
     async def get_user_secret(self, *, oauth_consumer_key: str) -> str:
-        await self._consumers_collection.insert_one({"gay": "pidor"})
         consumer = await self._get_consumer(oauth_consumer_key=oauth_consumer_key)
         consumer = consumer if consumer is not None else {}
 

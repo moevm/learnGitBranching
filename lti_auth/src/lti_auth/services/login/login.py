@@ -4,7 +4,6 @@ from starlette.responses import Response
 
 from lti_auth.entities.domain.jwt_token_payload import JwtTokenPayload
 from lti_auth.entities.domain.pass_back_params import LtiPassBackParams
-from lti_auth.serializers.jwt_token_payload import jwt_token_payload_serializer
 from lti_auth.serializers.pass_back_params import pass_back_params_serializer
 from lti_auth.services import LtiMarksService
 from lti_auth.settings.settings import settings
@@ -19,7 +18,12 @@ class LoginService:
     async def login_user(self, *, user_id: str | int, pass_back_params: LtiPassBackParams, task_id: str) -> str:
         score = await self._lti_marks_service.get_score(pass_back_params=pass_back_params)
         success = score == 1
-        data = JwtTokenPayload(user_id=user_id, task_id=task_id, pass_back_params=pass_back_params, is_success=success)
+        data = JwtTokenPayload(
+            user_id=str(user_id),
+            task_id=task_id,
+            pass_back_params=pass_back_params,
+            is_success=success,
+        )
         token = self._encode_jwt_token(token_data=data)
 
         self._cookie_store[user_id] = token
@@ -43,12 +47,12 @@ class LoginService:
         )
 
     async def extract_pass_back_params(self, jwt_token: str) -> LtiPassBackParams:
-        token_data = self._decode_jwt_token(token=jwt_token)
+        token_data = self.decode_jwt_token(token=jwt_token)
 
         return token_data.pass_back_params
 
     @staticmethod
-    def _decode_jwt_token(token: str) -> JwtTokenPayload:
+    def decode_jwt_token(token: str) -> JwtTokenPayload:
         token_data = jwt.decode(token, key=settings.jwt_secret, algorithms=[settings.jwt_algorithm])
         pass_back_params_json = token_data[settings.jwt_pass_back_params_param_name]
         pass_back_params = pass_back_params_serializer.load(orjson.loads(pass_back_params_json))

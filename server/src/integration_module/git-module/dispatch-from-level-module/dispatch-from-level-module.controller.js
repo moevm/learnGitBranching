@@ -19,11 +19,13 @@ export class DispatchFromLevelModuleController {
     const task_id = decoded[process.env.JWT_TASK_ID_PARAM_NAME]
     const levelNumber = task_id.match(/\d+/g)[0]
     const levelType = task_id.match(/[a-zA-Z]+/g)[0]
+    const headers = request.headers
 
     dispatchFromLevelDto.levelIndex = levelNumber
     dispatchFromLevelDto.levelType = levelType
     dispatchFromLevelDto.userId = decoded[process.env.JWT_USER_ID_PARAM_NAME]
     dispatchFromLevelDto.jwtToken = jwt_token
+    dispatchFromLevelDto.headers = headers
 
     return this.dispatchFromLevelService.dispatchFromLevel(dispatchFromLevelDto)
   }
