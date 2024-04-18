@@ -14,3 +14,6 @@ class UserService:
 
     async def is_exists_task_user(self, *, lms_user_id: str, task_id: str) -> bool:
         return await self.user_repository.is_exists_task_user(lms_user_id=lms_user_id, task_id=task_id)
+
+    async def find_user(self, lms_user_id: str) -> TaskUser | None:
+        return await self.user_repository.find_user(lms_user_id=lms_user_id)

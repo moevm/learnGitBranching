@@ -15,7 +15,7 @@ class BaseUser:
     """GUID инстанса"""
     is_lti: bool
     """Является ли пользователь LTI"""
-    params_for_pass_back: LtiPassBackParams
+    params_for_pass_back: list[LtiPassBackParams]
     """Параметры для передачи оценки"""
     is_admin: bool
     """Является ли пользователь администратором"""

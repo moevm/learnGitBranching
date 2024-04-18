@@ -16,3 +16,7 @@ class UsersRepositoryContract(Protocol):
     @abstractmethod
     async def is_exists_task_user(self, *, lms_user_id: str, task_id: str) -> bool:
         """Проверка существования пользователя по задаче"""
+
+    @abstractmethod
+    async def find_user(self, lms_user_id: str) -> TaskUser | None:
+        """Получение пользователя по lms_user_id"""

@@ -40,16 +40,18 @@ async def _is_auth_lti_request(lti_form: LtiRequest, request: Request) -> bool:
 
 
 async def _save_user(form: LtiRequest) -> None:
-    user = TaskUser(
-        user_name=form.ext_user_username,
-        person_name=form.lis_person_name_full,
-        tool_consumer_instance_guid=form.tool_consumer_instance_guid,
-        is_lti=True,
-        params_for_pass_back=form.pass_back_params,
-        is_admin=LtiRole.instructor in form.roles,
-        lms_user_id=form.user_id,
-        task_id=form.custom_task_id,
-    )
+    if not (user := await user_service.find_user(lms_user_id=form.user_id)):
+        user = TaskUser(
+            user_name=form.ext_user_username,
+            person_name=form.lis_person_name_full,
+            tool_consumer_instance_guid=form.tool_consumer_instance_guid,
+            is_lti=True,
+            params_for_pass_back=[],
+            is_admin=LtiRole.instructor in form.roles,
+            lms_user_id=form.user_id,
+            task_id=form.custom_task_id,
+        )
+    user.params_for_pass_back.append(form.pass_back_params)
     await user_service.upsert_task_user(user=user)
 
 

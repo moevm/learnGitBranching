@@ -4,6 +4,7 @@ from motor.core import AgnosticCollection
 
 from lti_auth.entities.domain.user import BaseUser, TaskUser
 from lti_auth.repositories.db_repositories.users import UsersRepositoryContract
+from lti_auth.serializers.user import task_user_serializer
 
 
 class UsersMongoRepository(UsersRepositoryContract):
@@ -28,6 +29,9 @@ class UsersMongoRepository(UsersRepositoryContract):
             await self.update_user(user=user, extend_filters=task_filter)
         else:
             await self.insert_user(user=user)
+
+    async def find_user(self, lms_user_id: str) -> TaskUser | None:
+        return await self.find_user_by_lms_user_id(lms_user_id=lms_user_id)
 
     # ДОП. ФУНКЦИИ
     async def insert_user(self, user: BaseUser) -> None:
@@ -55,9 +59,12 @@ class UsersMongoRepository(UsersRepositoryContract):
 
         return user is not None
 
-    async def find_user_by(self, filter_query: dict[str, Any]) -> BaseUser | None:
-        return await self.users_collection.find_one(filter=filter_query)
+    async def find_user_by(self, filter_query: dict[str, Any]) -> TaskUser | None:
+        res = await self.users_collection.find_one(filter=filter_query)
+        if res:
+            return task_user_serializer.load(res)
+        return None
 
-    async def find_user_by_lms_user_id(self, lms_user_id: str) -> BaseUser | None:
+    async def find_user_by_lms_user_id(self, lms_user_id: str) -> TaskUser | None:
         filter_query = {"lms_user_id": lms_user_id}
         return await self.find_user_by(filter_query=filter_query)
