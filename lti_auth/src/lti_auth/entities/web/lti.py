@@ -15,7 +15,7 @@ class LtiRequest(BaseModel):
     oauth_consumer_key: str = ""
     user_id: str = ""
     lis_person_sourcedid: str = ""
-    roles: list[LtiRole] = []
+    roles: list[str] = []
     context_id: str = ""
     context_label: str = ""
     context_title: str = ""
@@ -51,7 +51,7 @@ class LtiRequest(BaseModel):
         raise NotImplementedError
 
     @property
-    def main_role(self) -> LtiRole:
+    def main_role(self) -> str:
         return self.roles[0]
 
     @property

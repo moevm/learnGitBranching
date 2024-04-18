@@ -52,7 +52,7 @@ async def _save_user(*, form: LtiRequest, jwt_token: str) -> None:
             tool_consumer_instance_guid=form.tool_consumer_instance_guid,
             is_lti=True,
             params_for_pass_back=[],
-            is_admin=LtiRole.instructor in form.roles,
+            is_admin=LtiRole.instructor.value in form.roles,
             lms_user_id=form.user_id,
             tasks=[],
         )
