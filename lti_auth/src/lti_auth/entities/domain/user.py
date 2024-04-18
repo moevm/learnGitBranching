@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 
 from serpyco_rs import Serializer
 
@@ -34,9 +35,19 @@ class BaseUser:
 
 
 @dataclass(slots=True, kw_only=True)
-class TaskUser(BaseUser):
+class Task:
     task_id: str
     """ID задачи"""
+    join_at: datetime
+    """Дата присоединения к задаче"""
+    session_id: str
+    """ID сессии"""
+
+
+@dataclass(slots=True, kw_only=True)
+class TaskUser(BaseUser):
+    tasks: list[Task]
+    """ID задач, в которых участвовал пользователь"""
 
     @property
     def serializer(self) -> Serializer:

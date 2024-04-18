@@ -24,9 +24,8 @@ class UsersMongoRepository(UsersRepositoryContract):
         return await self.is_user_exists(lms_user_id=lms_user_id, extend_filters=task_filter)
 
     async def upsert_task_user(self, user: TaskUser) -> None:
-        task_filter = {"task_id": user.task_id}
-        if await self.is_user_exists(lms_user_id=user.lms_user_id, extend_filters=task_filter):
-            await self.update_user(user=user, extend_filters=task_filter)
+        if await self.is_user_exists(lms_user_id=user.lms_user_id):
+            await self.update_user(user=user)
         else:
             await self.insert_user(user=user)
 
