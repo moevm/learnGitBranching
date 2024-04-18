@@ -26,6 +26,5 @@ COPY ./.env ./
 RUN ["mv", "/app/front/index.html", "/app/server/src/dist/index.html"]
 RUN ["mv", "/app/front/build", "/app/server/src/dist/build"]
 RUN ["mv", "/app/front/assets", "/app/server/src/dist/assets"]
-EXPOSE 3000/tcp
 RUN ["npm", "install"]
 #RUN ["npm", "run", "start:dev"]

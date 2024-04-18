@@ -2,6 +2,8 @@ import { Bind, Body, Controller, Dependencies, Get, Req, Res } from '@nestjs/com
 import {MainPageModuleService} from "./main-page-module.service";
 import {env} from "../../env";
 import * as jwt from "jsonwebtoken";
+import * as axios from "axios";
+import https from "node:https";
 
 
 @Controller()
@@ -23,5 +25,27 @@ export class MainPageModuleController {
     res = res.replaceAll('build/', 'static/build/')
 
     response.send(res)
+
+    await this.sendStatOpenPage(jwt_token, request.headers, task_id)
+  }
+
+  async sendStatOpenPage(jwtToken, nginx_headers, taskId) {
+    await axios.post(
+      'https://python_app:8001/python_app/v1/send-stat/',
+      {
+        'stat_event_type': 'open_page',
+        'jwt_token': jwtToken,
+        'extra_data': {
+          'task_id': taskId,
+        },
+        'user_ip': nginx_headers['x-real-ip'],
+        'user_agent': nginx_headers['user-agent'],
+      },
+      {
+        httpsAgent: new https.Agent({
+          rejectUnauthorized: false
+        }),
+      },
+    )
   }
 }

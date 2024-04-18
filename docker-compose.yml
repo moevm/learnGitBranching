@@ -8,6 +8,7 @@ services:
       - ./cert.pem:/etc/nginx/ssl/fullchain.pem
       - ./key.pem:/etc/nginx/ssl/privkey.pem
       - ./config/nginx.conf:/etc/nginx/nginx.conf
+      - ~/logs/nginx:/var/log/nginx
     ports:
       - 80:80
       - 443:443
@@ -23,10 +24,8 @@ services:
 
     # порт запуска приложения захардкожен тут и в ngiinx.conf
     # менять нет смысла, если хочется достучаться снаружи, просто выставляем нужный порт в директиву porst
-    command: [ "uvicorn", "lti_auth.app:app", "--host", "0.0.0.0", "--port", "8001", "--ssl-keyfile", "../key.pem", "--ssl-certfile", "../cert.pem" ]
+    command: [ "uvicorn", "lti_auth.app:app", "--host", "0.0.0.0", "--port", "8001", "--ssl-keyfile", "../key.pem", "--ssl-certfile", "../cert.pem"]
     restart: always
-    ports:
-      - 8008:8001
 
   js_app:
     container_name: lean_git_branching
@@ -37,8 +36,6 @@ services:
       dockerfile: Dockerfile
       args:
         - NGINX_HOST_NAME=${NGINX_HOST_NAME}
-    ports:
-      - "3000:3000"
     command: npm run start:dev
     restart: always
 
@@ -46,12 +43,8 @@ services:
     image: mongo:latest
     env_file:
       - .env
-      - .env.example
-    ports:
-      - 27018:27017
-#    volumes:
-#      - ~/mongodata:/data/db
-
+    volumes:
+      - ~/mongodata:/data/db
 volumes:
   presentation_files:
   redis_data:

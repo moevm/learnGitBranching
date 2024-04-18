@@ -30,6 +30,9 @@ mypy-extensions = "^1.0.0"
 ruff = "^0.3.2"
 deptry = "^0.16.1"
 
+[tool.deptry.per_rule_ignores]
+DEP002 = ['python-multipart']
+
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core"]  # игнорим, т.к. необходим для fast-api
 build-backend = "poetry.core.masonry.api"
