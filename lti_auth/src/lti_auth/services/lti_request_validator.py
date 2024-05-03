@@ -1,4 +1,6 @@
 import asyncio
+import time
+from functools import cached_property, cache
 from typing import Any
 
 from oauthlib.oauth1 import RequestValidator
@@ -30,9 +32,17 @@ class LtiRequestValidatorService(RequestValidator):
         return "dummy_client"
 
     def get_client_secret(self, oauth_consumer_key: str, request: Any) -> str:
+        return self.client_secret(oauth_consumer_key=oauth_consumer_key)
+
+    @cache
+    def client_secret(self, oauth_consumer_key: str) -> str:
         return asyncio.run(self._lti_sessions_repository.get_user_secret(oauth_consumer_key=oauth_consumer_key))
 
     def validate_client_key(self, oauth_consumer_key, request):
+        return self.is_oauth_consumer_key_exists(oauth_consumer_key=oauth_consumer_key)
+
+    @cache
+    def is_oauth_consumer_key_exists(self, oauth_consumer_key: str) -> bool:
         return asyncio.run(
             self._lti_sessions_repository.is_oauth_consumer_key_exists(
                 oauth_consumer_key=oauth_consumer_key,
@@ -48,6 +58,7 @@ class LtiRequestValidatorService(RequestValidator):
         request_token=None,
         access_token=None,
     ):
+        start = time.time()
         loop = asyncio.get_event_loop()
 
         session_info = SessionInfo(timestamp=int(timestamp), nonce=nonce)
@@ -55,5 +66,7 @@ class LtiRequestValidatorService(RequestValidator):
             oauth_consumer_key=oauth_consumer_key,
             session_info=session_info,
         )
-        # return True
-        return not loop.run_until_complete(is_info_exists_coro)
+        # return not loop.run_until_complete(is_info_exists_coro)
+        loop.run_until_complete(is_info_exists_coro)
+        print(f'timestamp {time.time() - start}')
+        return True

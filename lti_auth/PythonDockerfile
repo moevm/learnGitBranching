@@ -11,10 +11,9 @@ COPY ./cert.pem /my_app/cert.pem
 COPY ./key.pem /my_app/key.pem
 COPY ./src /my_app/src
 
+WORKDIR /my_app/src
 RUN export PYTHONPATH=$PWD
 RUN poetry export -f requirements.txt --output requirements.txt
 RUN pip list
 RUN pip install -r requirements.txt
 RUN pip install uvicorn
-
-WORKDIR /my_app/src

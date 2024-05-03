@@ -1,3 +1,5 @@
+import time
+
 from fastapi import Depends
 from starlette import status
 from starlette.requests import Request
@@ -14,7 +16,13 @@ from lti_auth.value_objects.session_info import SessionInfo
 
 
 async def v1_lti_controller(request: Request, lti_form: LtiRequest = Depends(LtiRequest.as_form)) -> RedirectResponse:  # noqa: B008
-    if await _is_auth_lti_request(lti_form=lti_form, request=request):
+    try:
+        start = time.time()
+        is_auth_lti_request = await _is_auth_lti_request(lti_form=lti_form, request=request)
+        print(time.time() - start)
+    except Exception:
+        raise lti_auth_service.LtiAuthError()
+    if is_auth_lti_request:
         jwt_token = await _generate_jwt_token(lti_form=lti_form)
         await _save_user(form=lti_form, jwt_token=jwt_token)
 
