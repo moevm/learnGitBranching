@@ -32,5 +32,3 @@ services:
         env_file:
             - .env
             - .env.example
-        ports:
-            - 27018:27017
