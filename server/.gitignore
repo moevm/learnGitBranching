@@ -1,3 +1,39 @@
+# compiled output
+/dist
+/node_modules
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS
+.DS_Store
+
+# Tests
+/coverage
+/.nyc_output
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
 # NPM and Yarn
 npm-debug.log
 yarn-error.log
@@ -30,24 +66,3 @@ UserInterfaceState.xcuserstate
 
 *.mode1v3
 *.mode2v3
-
-*.xcodeproj/xcuserdata/*.xcuserdatad
-
-*.xccheckout
-*.xcuserdatad
-
-*.pyc
-
-.User.xcconfig
-
-Tools/xctool/build
-Tools/clang/analyzer/build
-Tools/clang/libtooling/build
-Tools/clang/clang-ocaml/build
-Tools/clang/xcode
-VendorLib/Breakpad/src/tools/mac/dump_syms/build
-DerivedData
-VendorLib/clang/lib/arc
-VendorLib/clang/lib/c++
-
-.idea

@@ -338,6 +338,14 @@ var LevelDropdownView = ContainedBase.extend({
       );
       var level = LevelStore.getLevel(id);
       var name = level.name.en_US;
+      const showResult = document.getElementById('passedtask')
+
+      if (level['isSuccess']) {
+        showResult.style.display = "block";
+        showResult.classList.add('alert-success')
+        showResult.innerText = 'Задание решено успешно'
+      }
+
       log.levelSelected(name);
     }
     this.hide();
@@ -396,7 +404,7 @@ var SeriesView = BaseView.extend({
     };
 
     this.render();
-    this.updateSolvedStatus();
+    // this.updateSolvedStatus();
   },
 
   updateSolvedStatus: function() {

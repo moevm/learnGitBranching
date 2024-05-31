@@ -1,0 +1,20 @@
+FROM python:3.11-slim
+WORKDIR /my_app
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+RUN pip install poetry
+
+COPY ./poetry.lock ./pyproject.toml /my_app/
+COPY ./cert.pem /my_app/cert.pem
+COPY ./key.pem /my_app/key.pem
+COPY ./src /my_app/src
+
+RUN export PYTHONPATH=$PWD
+RUN poetry export -f requirements.txt --output requirements.txt
+RUN pip list
+RUN pip install -r requirements.txt
+RUN pip install uvicorn
+
+WORKDIR /my_app/src

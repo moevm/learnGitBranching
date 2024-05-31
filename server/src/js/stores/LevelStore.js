@@ -80,9 +80,9 @@ var validateLevel = function(level) {
   level = level || {};
   var requiredFields = [
     'name',
-    'goalTreeString',
+    // 'goalTreeString',
     //'description',
-    'solutionCommand'
+    // 'solutionCommand'
   ];
 
   requiredFields.forEach(function(field) {

@@ -180,6 +180,14 @@ var initRootEvents = function(eventBaton) {
 var initDemo = function(sandbox) {
   var params = util.parseQueryString(window.location.href);
 
+
+  if (params.locale !== undefined && params.locale.length) {
+    LocaleActions.changeLocaleFromURI(params.locale);
+  } else {
+    tryLocaleDetect();
+  }
+
+
   // being the smart programmer I am (not), I don't include a true value on demo, so
   // I have to check if the key exists here
   var commands;
@@ -189,7 +197,13 @@ var initDemo = function(sandbox) {
     });
   }
 
-  if (params.hasOwnProperty('demo')) {
+  let withLevelId = false;
+  // хардкодим, чтобы можно было костыльно возвращать только один уровень в запросе
+  params.level_id = 'intro1'
+  if (params.level_id) {
+    withLevelId = true;
+  }
+  else if (params.hasOwnProperty('demo')) {
     commands = [
       "git commit; git checkout -b bugFix C1; git commit; git merge main; git checkout main; git commit; git rebase bugFix;",
       "delay 1000; reset;",
@@ -197,7 +211,7 @@ var initDemo = function(sandbox) {
       "delay 2000; show goal; delay 1000; hide goal;",
       "git checkout bugFix; git rebase main; git checkout side; git rebase bugFix;",
       "git checkout another; git rebase side; git rebase another main;",
-      "help; levels"
+      // "levels"
     ];
   } else if (params.hasOwnProperty('hgdemo')) {
     commands = [
@@ -234,7 +248,7 @@ var initDemo = function(sandbox) {
       'git fakeTeamwork',
       'git pull --rebase',
       'git push',
-      'levels'
+      // 'levels'
     ];
     commands = commands.join(';#').split('#'); // hax
   } else if (params.gist_level_id) {
@@ -261,8 +275,8 @@ var initDemo = function(sandbox) {
     });
   } else if (!params.hasOwnProperty('NODEMO')) {
     commands = [
-      "help;",
-      "levels"
+      // "help;",
+      // "levels"
     ];
   }
   if (params.hasOwnProperty('STARTREACT')) {
@@ -278,12 +292,6 @@ var initDemo = function(sandbox) {
     });
   }
 
-  if (params.locale !== undefined && params.locale.length) {
-    LocaleActions.changeLocaleFromURI(params.locale);
-  } else {
-    tryLocaleDetect();
-  }
-
   insertAlternateLinks();
 
   if (params.command) {
@@ -291,6 +299,10 @@ var initDemo = function(sandbox) {
     sandbox.mainVis.customEvents.on('gitEngineReady', function() {
       eventBaton.trigger('commandSubmitted', command);
     });
+  }
+
+  if (withLevelId) {
+    levelDropdown.navEvents.trigger('clickedID', params.level_id);
   }
 
 };

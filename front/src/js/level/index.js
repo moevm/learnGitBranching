@@ -31,7 +31,7 @@ var regexMap = {
   'start dialog': /^start dialog$/,
   'show goal': /^(show goal|goal|help goal)$/,
   'hide goal': /^hide goal$/,
-  'show solution': /^show solution($|\s)/,
+  // 'show solution': /^show solution($|\s)/,
   'objective': /^(objective|assignment)$/
 };
 
@@ -156,9 +156,9 @@ var Level = Sandbox.extend({
   },
 
   initGoalData: function(options) {
-    if (!this.level.goalTreeString || !this.level.solutionCommand) {
-      throw new Error('need goal tree and solution');
-    }
+    // if (!this.level.goalTreeString || !this.level.solutionCommand) {
+    //   throw new Error('need goal tree and solution');
+    // }
   },
 
   takeControl: function() {
@@ -448,7 +448,7 @@ var Level = Sandbox.extend({
     }
 
     var current = this.mainVis.gitEngine.printTree();
-    var solved = TreeCompare.dispatchFromLevel(this.level, current);
+    var solved = TreeCompare.dispatchFromLevel(this.level, command.get('rawStr'));
 
     if (!solved) {
       defer.resolve();
@@ -460,6 +460,7 @@ var Level = Sandbox.extend({
   },
 
   getNumSolutionCommands: function() {
+    return this.level.best
     // strip semicolons in bad places
     var toAnalyze = this.level.solutionCommand.replace(/^;|;$/g, '');
     return toAnalyze.split(';').length;
@@ -487,7 +488,7 @@ var Level = Sandbox.extend({
     var best = this.getNumSolutionCommands();
 
     var skipFinishDialog = this.testOption('noFinishDialog') ||
-      this.wasResetAfterSolved;
+      this.wasResetAfterSolved || true;
     var skipFinishAnimation = this.wasResetAfterSolved;
 
     if (!skipFinishAnimation) {
@@ -665,7 +666,7 @@ var Level = Sandbox.extend({
     var methodMap = {
       'show goal': this.showGoal,
       'hide goal': this.hideGoal,
-      'show solution': this.showSolution,
+      // 'show solution': this.showSolution,
       'start dialog': this.startDialog,
       'help level': this.startDialog,
       'objective': this.objectiveDialog
