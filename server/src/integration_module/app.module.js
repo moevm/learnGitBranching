@@ -9,6 +9,10 @@ import {PagesModule} from "./pages-module/pages.module";
 const staticModule = ServeStaticModule.forRoot({
   rootPath: join(__dirname, '..', 'dist'),
   serveRoot: '/static',
+  serveStaticOptions: {
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    cacheControl: true,
+  }
 })
 
 
