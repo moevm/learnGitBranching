@@ -20,6 +20,8 @@ var ModalAlert = Views.ModalAlert;
 var BuilderViews = require('../views/builderViews');
 var MultiView = require('../views/multiView').MultiView;
 
+var dispatchFromLevel = require('../graph/treeCompare').dispatchFromLevel;
+
 var Sandbox = Backbone.View.extend({
   // tag name here is purely vestigial. I made this a view
   // simply to use inheritance and have a nice event system in place
@@ -37,6 +39,15 @@ var Sandbox = Backbone.View.extend({
     if (!options.wait) {
       this.takeControl();
     }
+  },
+
+  postUndo: function(command) {
+    // Этот метод создан под undo и не проверяет, решён ли уровень, так как для undo это ненужно
+    if (this.solved) {
+      command.addWarning(intl.str('already-solved'));
+      return;
+    }
+    dispatchFromLevel(this.level, command.get('rawStr'));
   },
 
   getDefaultVisEl: function() {
@@ -132,6 +143,12 @@ var Sandbox = Backbone.View.extend({
   },
 
   undo: function(command, deferred) {
+    deferred.promise.then(function() {
+      this.postUndo(command);
+    }.bind(this)).catch(function(error) {
+      console.error('Error in post undo:', error);
+    });
+
     var toRestore = this.undoStack.pop();
     if (!toRestore) {
       command.set('error', new Errors.GitError({
@@ -265,7 +282,7 @@ var Sandbox = Backbone.View.extend({
     // some exceptions to the rule
     var commandMap = {
       'reset solved': this.resetSolved,
-      // 'undo': this.undo,
+      'undo': this.undo,
       'help': this.helpDialog,
       'reset': this.reset,
       'delay': this.delay,
