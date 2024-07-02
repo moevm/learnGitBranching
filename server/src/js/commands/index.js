@@ -9,11 +9,15 @@ var CommandResult = Errors.CommandResult;
 
 var commandConfigs = {
   'git': GitCommands.commandConfig,
-  'hg': MercurialCommands.commandConfig
+  'hg': MercurialCommands.commandConfig,
+  'sandbox': {undo: {regex: /^undo($|\s)/, execute: undefined}}
 };
 
 var commands = {
   execute: function(vcs, name, engine, commandObj) {
+    if(name == 'undo'){
+      return;
+    }
     if (!commandConfigs[vcs][name]) {
       throw new Error('i don\'t have a command for ' + name);
     }
@@ -49,7 +53,7 @@ var commands = {
   },
 
   blankMap: function() {
-    return {git: {}, hg: {}};
+    return {git: {}, hg: {}, sandbox: {}};
   },
 
   getShortcutMap: function() {

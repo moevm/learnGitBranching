@@ -91,7 +91,21 @@ HeadlessGit.prototype.init = function() {
     eventBaton: new EventBaton()
   });
   this.gitEngine.init();
+
+  this.gitEngine.undoStack = [];
 };
+
+HeadlessGit.prototype.pushUndoStack = function() {
+  var tree = this.gitEngine.exportTree();
+  this.gitEngine.undoStack.push(tree);
+}
+
+HeadlessGit.prototype.popUndoStack = function() {
+  if (this.gitEngine.undoStack.length === 0) {
+    throw new Error('undo stack empty');
+  }
+  this.gitEngine.loadTree(this.gitEngine.undoStack.pop());
+}
 
 // horrible hack so we can just quickly get a tree string for async git
 // operations, aka for git demonstration views
@@ -110,6 +124,18 @@ HeadlessGit.prototype.sendCommand = function(value, entireCommandPromise) {
   var startTime = new Date().getTime();
 
   var commands = [];
+  // Код для отслеживания undo 
+  if(value == 'undo'){
+    try{
+      this.popUndoStack();
+    }
+    catch(err){
+      console.log('Nothing to undo. Check client code');
+    }
+  }
+  else{
+    this.pushUndoStack();
+  }
 
   util.splitTextCommand(value, function(commandStr) {
     chain = chain.then(function() {
@@ -132,6 +158,7 @@ HeadlessGit.prototype.sendCommand = function(value, entireCommandPromise) {
   });
 
   chain.fail(function(err) {
+    this.popUndoStack();
     console.log('!!!!!!!! error !!!!!!!');
     console.log(err);
     console.log(err.stack);
