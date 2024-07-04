@@ -1,7 +1,7 @@
 
 services:
   nginx:
-    image: nginx
+    image: nginx:1.27.0-perl
     container_name: nginx_proxy
     volumes:
       - ./cert.pem:/etc/nginx/ssl/fullchain.pem
@@ -9,13 +9,12 @@ services:
       - ./config/nginx.conf:/etc/nginx/nginx.conf
       - logs:/var/log/nginx
     ports:
-      - 9000:443
+      - "127.0.0.1:9000:443"
 
   python_app:
     build:
       context: ./lti_auth
       dockerfile: PythonDockerfile
-    image: python:3.12
     container_name: python_app
     env_file:
       - .env
@@ -42,9 +41,10 @@ services:
     env_file:
       - .env
     volumes:
-      - ~/mongodata:/data/db
+      - mongo_data:/data/db
 volumes:
   presentation_files:
   redis_data:
   flower_data:
   logs:
+  mongo_data:
