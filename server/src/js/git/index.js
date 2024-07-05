@@ -2322,15 +2322,7 @@ GitEngine.prototype.rebaseInteractive = function(targetSource, currentLocation, 
       initialCommitOrdering.push(id);
     });
   }
-
-  var InteractiveRebaseView = require('../views/rebaseView').InteractiveRebaseView;
-  // interactive rebase view will reject or resolve our promise
-  new InteractiveRebaseView({
-    deferred: deferred,
-    toRebase: toRebase,
-    initialCommitOrdering: initialCommitOrdering,
-    aboveAll: options.aboveAll
-  });
+  deferred.resolve(toRebase)
 };
 
 GitEngine.prototype.filterRebaseCommits = function(
