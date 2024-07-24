@@ -23,6 +23,8 @@ pyjwt = "^2.8.0"
 starlette = "^0.37.2"
 python-multipart = "^0.0.9"
 oauthlib = "^3.2.2"
+uvicorn = "^0.30.3"
+httptools = "^0.6.1"
 
 [tool.poetry.dev-dependencies]
 mypy = "^1.9.0"
