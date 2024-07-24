@@ -66,4 +66,4 @@ class LoginService:
 
     @staticmethod
     def set_auth_cookie(*, response: Response, token: str) -> None:
-        response.set_cookie(key=settings.jwt_cookie_name, value=token, httponly=True, samesite="none", secure=True)
+        response.set_cookie(key=settings.jwt_cookie_name, value=token, httponly=True)

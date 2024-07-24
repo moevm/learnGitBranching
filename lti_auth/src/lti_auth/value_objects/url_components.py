@@ -27,6 +27,7 @@ class UrlComponents(Generic[_T], NamedTuple):
     @property
     def url(self) -> URL:
         return _base_url.replace(
+            scheme=self.scheme,
             hostname=self.host_name,
             port=self.str_port,
             path=self.uri,
@@ -59,4 +60,4 @@ class UrlComponents(Generic[_T], NamedTuple):
 
 
 # Задаём базовый url, который и будем реплейсить, т.к. с нуля создавать со значениями port не даёт, только с netloc
-_base_url = URL("https://localhost:8000")
+_base_url = URL("http://localhost:80")

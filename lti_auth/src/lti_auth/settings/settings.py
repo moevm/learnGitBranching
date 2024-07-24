@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     nginx_host_port: str | None = None
 
     # для редиректа на задачу
-    js_task_uri: str = "/js_app/task/"
+    js_task_uri: str = ""
 
     class Config:
         env_file = ".env.local"

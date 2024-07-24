@@ -39,7 +39,7 @@ async def _is_auth_lti_request(lti_form: LtiRequest, request: Request) -> bool:
             nonce=lti_form.oauth_nonce,
         ),
         lti_form=dict(await request.form()),
-        request_url=str(request.url.replace(hostname=settings.nginx_host_name, port=settings.nginx_host_port)),
+        request_url=str(request.url),
         request_headers=dict(request.headers),
     )
 

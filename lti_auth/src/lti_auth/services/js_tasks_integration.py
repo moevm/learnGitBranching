@@ -10,7 +10,7 @@ class JsTasksIntegrationService:
         """Получить url для задачи"""
 
         return UrlComponents(
-            scheme="https",
+            scheme="http",
             host_name=settings.nginx_host_name,
             host_port=settings.nginx_host_port,
             query=None,

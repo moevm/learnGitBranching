@@ -84,29 +84,21 @@ export class DispatchFromLevelModuleService {
 
   async sendStatResolveTask(jwtToken, nginx_headers) {
     await axios.post(
-      'https://python_app:8001/python_app/v1/send-stat/',
+      'http://lti_service/v1/send-stat/',
       {
         'stat_event_type': 'resolve_task',
         'jwt_token': jwtToken,
         'extra_data': {},
         'user_ip': nginx_headers['x-real-ip'],
         'user_agent': nginx_headers['user-agent'],
-      },
-      {
-          httpsAgent: new https.Agent({
-            rejectUnauthorized: false
-          }),
-        },
-      )
+      }
+    )
   }
 
   async sendMark(mark, jwtToken){
     const data = {mark}
 
-    await axios.post('https://python_app:8001/python_app/v1/send-score/', data, {
-      httpsAgent: new https.Agent({
-        rejectUnauthorized: false
-      }),
+    await axios.post('http://lti_service/v1/send-score/', data, {
       headers: {
         'Cookie': `${process.env.JWT_COOKIE_NAME}=${jwtToken}`,
       },
@@ -133,7 +125,7 @@ export class DispatchFromLevelModuleService {
 
   async sendStatSendCommand(jwtToken, nginx_headers, command) {
     await axios.post(
-      'https://python_app:8001/python_app/v1/send-stat/',
+      'http://lti_service/v1/send-stat/',
       {
         'stat_event_type': 'send_command',
         'jwt_token': jwtToken,
@@ -142,11 +134,6 @@ export class DispatchFromLevelModuleService {
         },
         'user_ip': nginx_headers['x-real-ip'],
         'user_agent': nginx_headers['user-agent'],
-      },
-      {
-        httpsAgent: new https.Agent({
-          rejectUnauthorized: false
-        }),
       },
     )
   }

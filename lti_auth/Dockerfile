@@ -5,7 +5,6 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 RUN pip install poetry==1.8.3
-# set versions
 
 COPY ./poetry.lock ./pyproject.toml /app/
 RUN poetry export -f requirements.txt --output requirements.txt
