@@ -14,7 +14,7 @@ class SendStatRequestV1:
     """JWT токен"""
     extra_data: dict[str, Any]
     """Дополнительные данные по событию"""
-    user_ip: str
+    # user_ip: str
     """IP пользователя"""
     user_agent: str
     """User-Agent пользователя"""

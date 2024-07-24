@@ -13,7 +13,7 @@ async def v1_send_stat_controller(request: SendStatRequestV1) -> None:
             stat_event_type=request.stat_event_type,
             session_id=sessions_service.generate_session_id_by_jwt_token(request.jwt_token),
             extra_data=request.extra_data,
-            user_ip=request.user_ip,
+            user_ip="none",
             user_agent=request.user_agent,
             consumed_at=now_utc(),
             user_id=token_data.user_id,
