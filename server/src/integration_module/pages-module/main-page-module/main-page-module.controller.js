@@ -19,7 +19,7 @@ export class MainPageModuleController {
     console.log(request.cookies)
     const jwt_token = request.cookies[process.env.JWT_COOKIE_NAME]
     const decoded = jwt.verify(jwt_token, process.env.JWT_SECRET)
-    const task_id = decoded[process.env.JWT_TASK_ID_PARAM_NAME]
+    const task_id = decoded['task_id']
     console.log(task_id)
     let res = await this.mainPageModuleServcie.getMainPage({'level_id': task_id})
     res = res.replaceAll('build/', 'static/build/')

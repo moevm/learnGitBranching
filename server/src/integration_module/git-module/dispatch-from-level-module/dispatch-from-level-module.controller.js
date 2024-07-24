@@ -16,7 +16,7 @@ export class DispatchFromLevelModuleController {
   resetLevel(request, dispatchFromLevelDto) {
     const jwt_token = request.cookies[process.env.JWT_COOKIE_NAME]
     const decoded = jwt.verify(jwt_token, process.env.JWT_SECRET)
-    const task_id = decoded[process.env.JWT_TASK_ID_PARAM_NAME]
+    const task_id = decoded['task_id']
     const levelNumber = task_id.match(/\d+/g)[0]
     const levelType = task_id.match(/[a-zA-Z]+/g)[0]
     const headers = request.headers
