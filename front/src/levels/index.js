@@ -4,7 +4,7 @@
 
 const {env} = require("../js/env");
 const request = new XMLHttpRequest();
-const url = `https://${env.NGINX_HOST_NAME}${env.NGINX_HOST_PORT ? `:${env.NGINX_HOST_PORT}` : ''}/js_app/get-levels/`
+const url = `/get-levels/`
 console.log(url)
 request.open("GET", url, false);
 

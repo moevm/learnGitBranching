@@ -19,7 +19,7 @@ export class MainPageModuleController {
     console.log(request.cookies)
     const jwt_token = request.cookies[process.env.JWT_COOKIE_NAME]
     const decoded = jwt.verify(jwt_token, process.env.JWT_SECRET)
-    const task_id = decoded[process.env.JWT_TASK_ID_PARAM_NAME]
+    const task_id = decoded['task_id']
     console.log(task_id)
     let res = await this.mainPageModuleServcie.getMainPage({'level_id': task_id})
     res = res.replaceAll('build/', 'static/build/')
@@ -31,7 +31,7 @@ export class MainPageModuleController {
 
   async sendStatOpenPage(jwtToken, nginx_headers, taskId) {
     await axios.post(
-      'https://python_app:8001/python_app/v1/send-stat/',
+      'http://lti_service/v1/send-stat/',
       {
         'stat_event_type': 'open_page',
         'jwt_token': jwtToken,
@@ -40,11 +40,6 @@ export class MainPageModuleController {
         },
         'user_ip': nginx_headers['x-real-ip'],
         'user_agent': nginx_headers['user-agent'],
-      },
-      {
-        httpsAgent: new https.Agent({
-          rejectUnauthorized: false
-        }),
       },
     )
   }

@@ -7,7 +7,7 @@ from lti_auth.repositories.db_repositories.mongo.users import UsersMongoReposito
 from lti_auth.settings.settings import settings
 
 client: AgnosticClient = AsyncIOMotorClient(settings.mongo_url)
-db: AgnosticDatabase = client["pres-parser-db"]
+db: AgnosticDatabase = client["learn-git"]
 
 
 users_collection: AgnosticCollection = db["users"]

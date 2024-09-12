@@ -11,7 +11,7 @@ async function bootstrap() {
     origin: true,
   }))
   app.use(cookieParser());
-  await app.listen(3000);
+  await app.listen(80);
 }
 
 bootstrap();
