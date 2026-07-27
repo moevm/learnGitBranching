@@ -105,6 +105,15 @@ var getTreeQuick = function(commandStr, getTreePromise) {
 };
 
 HeadlessGit.prototype.sendCommand = function(value, entireCommandPromise) {
+  // Commands coming back from the browser have already passed through
+  // splitTextCommand once. In particular, shell redirections are stored as
+  // &gt; / &gt;&gt;. Decode that transport representation before the server
+  // runs splitTextCommand again, otherwise it becomes &amp;gt; and no command
+  // parser can recognize it.
+  value = String(value || '')
+    .replace(/&gt;/g, '>')
+    .replace(/&lt;/g, '<');
+
   var deferred = Q.defer();
   var chain = deferred.promise;
   var startTime = new Date().getTime();
@@ -118,8 +127,18 @@ HeadlessGit.prototype.sendCommand = function(value, entireCommandPromise) {
       });
 
       var thisDeferred = Q.defer();
-      this.gitEngine.dispatch(commandObj, thisDeferred);
       commands.push(commandObj);
+
+      // Browser command queues do not dispatch commands that failed parsing.
+      // HeadlessGit used to dispatch them anyway, then dispatchProcess tried
+      // to call .replace() on a null method and never resolved the HTTP
+      // request. Keep the server-side behavior consistent with the browser.
+      if (commandObj.get('error')) {
+        thisDeferred.resolve();
+        return thisDeferred.promise;
+      }
+
+      this.gitEngine.dispatch(commandObj, thisDeferred);
       return thisDeferred.promise;
     }.bind(this));
   }, this);

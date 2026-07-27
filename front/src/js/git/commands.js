@@ -114,7 +114,77 @@ var assertBranchIsRemoteTracking = function(engine, branchName) {
   return tracking;
 };
 
+var parseSingleShellArgument = function(commandName, str) {
+  var match = new RegExp('^' + commandName + '\\s+(\\S+)\\s*$').exec(str);
+  return match ? [match[1]] : [];
+};
+
+var parseEchoArguments = function(str) {
+  var match = /^echo\s+(?:"([^"]*)"|'([^']*)')\s*(>>|>|&gt;&gt;|&gt;)\s*(\S+)\s*$/.exec(str);
+  return match ? [match[1] !== undefined ? match[1] : match[2], match[3], match[4]] : [];
+};
+
 var commandConfig = {
+  mkdir: {
+    regex: /^mkdir\s+\S+\s*$/,
+    parseArguments: function(str) {
+      return parseSingleShellArgument('mkdir', str);
+    },
+    execute: function(engine, command) {
+      engine.makeVirtualDirectory(command.getGeneralArgs()[0]);
+    }
+  },
+
+  cd: {
+    regex: /^cd\s+\S+\s*$/,
+    parseArguments: function(str) {
+      return parseSingleShellArgument('cd', str);
+    },
+    execute: function(engine, command) {
+      engine.changeVirtualDirectory(command.getGeneralArgs()[0]);
+    }
+  },
+
+  pwd: {
+    dontCountForGolf: true,
+    regex: /^pwd\s*$/,
+    parseArguments: function() {
+      return [];
+    },
+    execute: function(engine) {
+      throw new CommandResult({
+        msg: engine.getVirtualWorkingDirectory()
+      });
+    }
+  },
+
+  ls: {
+    dontCountForGolf: true,
+    regex: /^ls(?:\s+\S+)?\s*$/,
+    parseArguments: function(str) {
+      var match = /^ls(?:\s+(\S+))?\s*$/.exec(str);
+      return match && match[1] ? [match[1]] : [];
+    },
+    execute: function(engine, command) {
+      throw new CommandResult({
+        msg: engine.listVirtualDirectory(command.getGeneralArgs()[0])
+      });
+    }
+  },
+
+  echo: {
+    regex: /^echo\s+(?:"[^"]*"|'[^']*')\s*(?:>>|>|&gt;&gt;|&gt;)\s*\S+\s*$/,
+    parseArguments: parseEchoArguments,
+    execute: function(engine, command) {
+      var args = command.getGeneralArgs();
+      engine.writeVirtualFile(
+        args[2],
+        args[0],
+        args[1] === '>>' || args[1] === '&gt;&gt;'
+      );
+    }
+  },
+
   commit: {
     sc: /^(gc|git ci)($|\s)/,
     regex: /^git +commit($|\s)/,
@@ -504,10 +574,10 @@ var commandConfig = {
     dontCountForGolf: true,
     sc: /^ga($|\s)/,
     regex: /^git +add($|\s)/,
-    execute: function() {
-      throw new CommandResult({
-        msg: intl.str('git-error-staging')
-      });
+    execute: function(engine, command) {
+      var generalArgs = command.getGeneralArgs();
+      command.validateArgBounds(generalArgs, 1, Number.MAX_VALUE);
+      engine.stageVirtualFiles(generalArgs);
     }
   },
 

@@ -105,6 +105,12 @@ var getTreeQuick = function(commandStr, getTreePromise) {
 };
 
 HeadlessGit.prototype.sendCommand = function(value, entireCommandPromise) {
+  // Commands can reach a headless engine after already being escaped by the
+  // browser command pipeline. Normalize redirection operators before parsing.
+  value = String(value || '')
+    .replace(/&gt;/g, '>')
+    .replace(/&lt;/g, '<');
+
   var deferred = Q.defer();
   var chain = deferred.promise;
   var startTime = new Date().getTime();
@@ -118,8 +124,14 @@ HeadlessGit.prototype.sendCommand = function(value, entireCommandPromise) {
       });
 
       var thisDeferred = Q.defer();
-      this.gitEngine.dispatch(commandObj, thisDeferred);
       commands.push(commandObj);
+
+      if (commandObj.get('error')) {
+        thisDeferred.resolve();
+        return thisDeferred.promise;
+      }
+
+      this.gitEngine.dispatch(commandObj, thisDeferred);
       return thisDeferred.promise;
     }.bind(this));
   }, this);

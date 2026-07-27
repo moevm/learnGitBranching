@@ -16,16 +16,6 @@ var Warning = Errors.Warning;
 var CommandResult = Errors.CommandResult;
 
 var instantCommands = [
-  [/^ls( |$)/, function() {
-    throw new CommandResult({
-      msg: intl.str('ls-command')
-    });
-  }],
-  [/^cd( |$)/, function() {
-    throw new CommandResult({
-      msg: intl.str('cd-command')
-    });
-  }],
   [/^(locale|locale reset)$/, function(bits) {
     LocaleActions.changeLocale(
       LocaleStore.getDefaultLocale()
@@ -105,12 +95,6 @@ var instantCommands = [
     events.trigger('rollupCommands', bits[1]);
     throw new CommandResult({
       msg: 'Commands combined!'
-    });
-  }],
-  [/^echo "(.*?)"$|^echo (.*?)$/, function(bits) {
-    var msg = bits[1] || bits[2];
-    throw new CommandResult({
-      msg: msg
     });
   }],
   [/^show +commands$/, function(bits) {

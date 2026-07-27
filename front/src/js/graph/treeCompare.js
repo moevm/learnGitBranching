@@ -12,11 +12,19 @@ TreeCompare.dispatchFromLevel = function(levelBlob, rawCommandStr) {
   request.send(JSON.stringify({
     'levelType': levelBlob.levelType,
     'levelIndex': levelBlob.levelIndex,
-    'userId': 1,
+    'userId': levelBlob.studentUserId,
     'rawCommandStr': rawCommandStr,
   }));
 
   const res = JSON.parse(request.responseText);
+  if (res.sessionMismatch) {
+    window.alert(
+      'Сессия Moodle сменилась в другой вкладке. ' +
+      'Страница будет перезагружена для текущего пользователя.'
+    );
+    window.location.reload();
+    return false;
+  }
   return res.levelComplete
 };
 

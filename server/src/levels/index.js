@@ -29,6 +29,9 @@ exports.levelSequences = {
     require('./advanced/multipleParents').level,
     require('./rebase/selectiveRebase').level
   ],
+  lab: [
+    require('./lab/studentSubmission').level
+  ],
   remote: [
     require('./remote/clone').level,
     require('./remote/remoteBranches').level,
@@ -53,6 +56,16 @@ exports.levelSequences = {
 
 // there are also cute names and such for sequences
 var sequenceInfo = exports.sequenceInfo = {
+  lab: {
+    displayName: {
+      'en_US': 'Laboratory submissions',
+      'ru_RU': 'Загрузка лабораторных работ'
+    },
+    about: {
+      'en_US': 'Practice the complete workflow for submitting a laboratory assignment',
+      'ru_RU': 'Практика полного сценария загрузки лабораторной работы'
+    }
+  },
   intro: {
     displayName: {
       'en_US': 'Introduction Sequence',

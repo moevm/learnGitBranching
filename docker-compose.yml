@@ -1,13 +1,16 @@
 services:
-
   lti_service:
     build:
       context: ./lti_auth
       dockerfile: Dockerfile
     env_file:
       - .env
+    # extra_hosts:
+    #   - "lms.local:host-gateway"
+    # depends_on:
+    #   - mongo
     ports:
-      - 8001:80
+      - "8001:80"
     restart: always
 
   app:
@@ -16,10 +19,12 @@ services:
       dockerfile: Dockerfile
     env_file:
       - .env
+    # depends_on:
+    #   - lti_service
     command: npm run start:dev
     restart: always
     ports:
-      - 8002:80
+      - "8002:80"
 
   mongo:
     image: mongo:5.0
@@ -27,6 +32,7 @@ services:
       - .env
     volumes:
       - mongodata:/data/db
+    restart: always
 
 volumes:
   mongodata:
