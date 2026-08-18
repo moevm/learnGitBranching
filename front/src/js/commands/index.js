@@ -125,6 +125,11 @@ var parse = function(str) {
       if (regex.exec(str)) {
         vcs = thisVCS;
         method = thisMethod;
+        var config = commandConfigs[thisVCS][thisMethod];
+        if (config.parseArguments) {
+          options = config.parseArguments(str);
+          return;
+        }
         // every valid regex has to have the parts of
         // <vcs> <command> <stuff>
         // because there are always two space-groups
@@ -142,8 +147,15 @@ var parse = function(str) {
 
   // we support this command!
   // parse off the options and assemble the map / general args
+  var selectedConfig = commandConfigs[vcs][method];
   var parsedOptions = new CommandOptionParser(vcs, method, options);
-  var error = parsedOptions.explodeAndSet();
+  var error;
+  if (selectedConfig.parseArguments) {
+    parsedOptions.generalArgs = options;
+    parsedOptions.supportedMap = {};
+  } else {
+    error = parsedOptions.explodeAndSet();
+  }
   return {
     toSet: {
       generalArgs: parsedOptions.generalArgs,

@@ -15,12 +15,24 @@ class LoginService:
     def __init__(self, lti_marks_service: LtiMarksService):
         self._lti_marks_service = lti_marks_service
 
-    async def login_user(self, *, user_id: str | int, pass_back_params: LtiPassBackParams, task_id: str) -> str:
+    async def login_user(
+        self,
+        *,
+        user_id: str | int,
+        pass_back_params: LtiPassBackParams,
+        task_id: str,
+        given_name: str = "",
+        family_name: str = "",
+        full_name: str = "",
+    ) -> str:
         score = await self._lti_marks_service.get_score(pass_back_params=pass_back_params)
         success = score == 1
         data = JwtTokenPayload(
             user_id=str(user_id),
             task_id=task_id,
+            given_name=given_name,
+            family_name=family_name,
+            full_name=full_name,
             pass_back_params=pass_back_params,
             is_success=success,
         )
@@ -39,6 +51,9 @@ class LoginService:
             payload={
                 settings.jwt_user_id_param_name: token_data.user_id,
                 settings.jwt_task_id_param_name: token_data.task_id,
+                settings.jwt_given_name_param_name: token_data.given_name,
+                settings.jwt_family_name_param_name: token_data.family_name,
+                settings.jwt_full_name_param_name: token_data.full_name,
                 settings.jwt_pass_back_params_param_name: pass_back_params_json,
                 settings.jwt_is_success_param_name: token_data.is_success,
             },
@@ -61,6 +76,9 @@ class LoginService:
             pass_back_params=pass_back_params,
             user_id=token_data[settings.jwt_user_id_param_name],
             task_id=token_data[settings.jwt_task_id_param_name],
+            given_name=token_data.get(settings.jwt_given_name_param_name, ""),
+            family_name=token_data.get(settings.jwt_family_name_param_name, ""),
+            full_name=token_data.get(settings.jwt_full_name_param_name, ""),
             is_success=token_data[settings.jwt_is_success_param_name],
         )
 

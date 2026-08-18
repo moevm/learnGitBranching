@@ -11,6 +11,12 @@ class JwtTokenPayload:
     """Идентификатор пользователя"""
     task_id: str
     """Идентификатор задания"""
+    given_name: str
+    """Имя пользователя из LMS"""
+    family_name: str
+    """Фамилия пользователя из LMS"""
+    full_name: str
+    """Полное имя пользователя из LMS"""
     pass_back_params: LtiPassBackParams
     """Параметры для передачи (json)"""
     is_success: bool

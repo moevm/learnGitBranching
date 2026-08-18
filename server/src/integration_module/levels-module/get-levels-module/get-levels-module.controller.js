@@ -2,6 +2,7 @@ import {Bind, Controller, Dependencies, Get, Req} from '@nestjs/common';
 import {GetLevelsModuleService} from "./get-levels-module.service";
 import {env} from "../../env";
 import * as jwt from 'jsonwebtoken'
+import {buildStudentProfile} from "../../student-profile";
 
 
 @Controller()
@@ -19,7 +20,8 @@ export class GetLevelsModuleController {
 
     const task_id = decoded['task_id']
     const is_success = decoded[process.env.JWT_IS_SUCCESS_PARAM_NAME]
+    const studentProfile = buildStudentProfile(decoded)
 
-    return this.getLevelsService.getLevels(task_id, is_success)
+    return this.getLevelsService.getLevels(task_id, is_success, studentProfile)
   }
 }

@@ -24,6 +24,40 @@ function catchShortCircuit(err) {
   }
 }
 
+function createEmptyVirtualFileSystem() {
+  return {
+    cwd: '/',
+    directories: ['/'],
+    files: {},
+    stagedFiles: {},
+    lastCommittedFiles: {},
+    lastCommittedCommit: null
+  };
+}
+
+function clonePlainObject(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function normalizeVirtualPath(cwd, rawPath) {
+  var path = String(rawPath || '');
+  var parts = (path.charAt(0) === '/' ? path : cwd + '/' + path).split('/');
+  var normalizedParts = [];
+
+  parts.forEach(function(part) {
+    if (!part || part === '.') {
+      return;
+    }
+    if (part === '..') {
+      normalizedParts.pop();
+      return;
+    }
+    normalizedParts.push(part);
+  });
+
+  return '/' + normalizedParts.join('/');
+}
+
 function GitEngine(options) {
   this.rootCommit = null;
   this.refs = {};
@@ -31,6 +65,7 @@ function GitEngine(options) {
   this.origin = null;
   this.mode = 'git';
   this.localRepo = null;
+  this.virtualFileSystem = createEmptyVirtualFileSystem();
 
   this.branchCollection = options.branches;
   this.tagCollection = options.tags;
@@ -152,6 +187,151 @@ GitEngine.prototype.init = function() {
   this.commit();
 };
 
+GitEngine.prototype.loadVirtualFileSystem = function(fileSystem) {
+  var source = fileSystem || {};
+  this.virtualFileSystem = {
+    cwd: source.cwd || '/',
+    directories: (source.directories || ['/']).slice(),
+    files: clonePlainObject(source.files || {}),
+    stagedFiles: clonePlainObject(source.stagedFiles || {}),
+    lastCommittedFiles: clonePlainObject(source.lastCommittedFiles || {}),
+    lastCommittedCommit: source.lastCommittedCommit || null
+  };
+
+  if (this.virtualFileSystem.directories.indexOf('/') === -1) {
+    this.virtualFileSystem.directories.unshift('/');
+  }
+};
+
+GitEngine.prototype.getVirtualFileSystem = function() {
+  return clonePlainObject(this.virtualFileSystem);
+};
+
+GitEngine.prototype.getVirtualWorkingDirectory = function() {
+  return this.virtualFileSystem.cwd;
+};
+
+GitEngine.prototype.resolveVirtualPath = function(path) {
+  return normalizeVirtualPath(this.virtualFileSystem.cwd, path);
+};
+
+GitEngine.prototype.makeVirtualDirectory = function(path) {
+  var target = this.resolveVirtualPath(path);
+  var parent = target.slice(0, target.lastIndexOf('/')) || '/';
+
+  if (this.virtualFileSystem.directories.indexOf(parent) === -1) {
+    throw new GitError({msg: 'mkdir: родительский каталог не существует: ' + parent});
+  }
+  if (this.virtualFileSystem.directories.indexOf(target) !== -1 ||
+      this.virtualFileSystem.files[target] !== undefined) {
+    throw new GitError({msg: 'mkdir: файл или каталог уже существует: ' + target});
+  }
+
+  this.virtualFileSystem.directories.push(target);
+  this.virtualFileSystem.directories.sort();
+};
+
+GitEngine.prototype.changeVirtualDirectory = function(path) {
+  var target = this.resolveVirtualPath(path);
+  if (this.virtualFileSystem.directories.indexOf(target) === -1) {
+    throw new GitError({msg: 'cd: каталог не существует: ' + target});
+  }
+  this.virtualFileSystem.cwd = target;
+};
+
+GitEngine.prototype.listVirtualDirectory = function(path) {
+  var target = path ? this.resolveVirtualPath(path) : this.virtualFileSystem.cwd;
+  if (this.virtualFileSystem.directories.indexOf(target) === -1) {
+    throw new GitError({msg: 'ls: каталог не существует: ' + target});
+  }
+
+  var prefix = target === '/' ? '/' : target + '/';
+  var names = {};
+  this.virtualFileSystem.directories.forEach(function(directory) {
+    if (directory.indexOf(prefix) !== 0 || directory === target) {
+      return;
+    }
+    var relative = directory.slice(prefix.length);
+    if (relative && relative.indexOf('/') === -1) {
+      names[relative + '/'] = true;
+    }
+  });
+  Object.keys(this.virtualFileSystem.files).forEach(function(filePath) {
+    if (filePath.indexOf(prefix) !== 0) {
+      return;
+    }
+    var relative = filePath.slice(prefix.length);
+    if (relative && relative.indexOf('/') === -1) {
+      names[relative] = true;
+    }
+  });
+
+  return Object.keys(names).sort().join('<br/>');
+};
+
+GitEngine.prototype.writeVirtualFile = function(path, content, append) {
+  var target = this.resolveVirtualPath(path);
+  var parent = target.slice(0, target.lastIndexOf('/')) || '/';
+  if (this.virtualFileSystem.directories.indexOf(parent) === -1) {
+    throw new GitError({msg: 'echo: каталог не существует: ' + parent});
+  }
+  if (this.virtualFileSystem.directories.indexOf(target) !== -1) {
+    throw new GitError({msg: 'echo: указанный путь является каталогом: ' + target});
+  }
+
+  var line = String(content)
+    .replace(/&quot;/g, '"')
+    .replace(/&#x27;/g, "'") + '\n';
+  this.virtualFileSystem.files[target] = append
+    ? (this.virtualFileSystem.files[target] || '') + line
+    : line;
+};
+
+GitEngine.prototype.stageVirtualFiles = function(paths) {
+  var stagedSomething = false;
+  paths.forEach(function(path) {
+    var target = this.resolveVirtualPath(path);
+    var isDirectory = this.virtualFileSystem.directories.indexOf(target) !== -1;
+    var matchingFiles = [];
+
+    if (this.virtualFileSystem.files[target] !== undefined) {
+      matchingFiles = [target];
+    } else if (isDirectory) {
+      var prefix = target === '/' ? '/' : target + '/';
+      matchingFiles = Object.keys(this.virtualFileSystem.files).filter(function(filePath) {
+        return filePath.indexOf(prefix) === 0;
+      });
+    }
+
+    if (!matchingFiles.length) {
+      throw new GitError({msg: 'git add: файл или непустой каталог не найден: ' + target});
+    }
+
+    matchingFiles.forEach(function(filePath) {
+      this.virtualFileSystem.stagedFiles[filePath] = this.virtualFileSystem.files[filePath];
+      stagedSomething = true;
+    }, this);
+  }, this);
+
+  if (!stagedSomething) {
+    throw new GitError({msg: 'git add: нечего добавлять'});
+  }
+};
+
+GitEngine.prototype.commitVirtualFiles = function(commitId) {
+  if (!Object.keys(this.virtualFileSystem.stagedFiles).length) {
+    return;
+  }
+
+  this.virtualFileSystem.lastCommittedFiles = Object.assign(
+    {},
+    this.virtualFileSystem.lastCommittedFiles,
+    clonePlainObject(this.virtualFileSystem.stagedFiles)
+  );
+  this.virtualFileSystem.lastCommittedCommit = commitId;
+  this.virtualFileSystem.stagedFiles = {};
+};
+
 GitEngine.prototype.hasOrigin = function() {
   return !!this.origin;
 };
@@ -196,7 +376,8 @@ GitEngine.prototype.exportTree = function() {
     branches: {},
     commits: {},
     tags: {},
-    HEAD: null
+    HEAD: null,
+    virtualFileSystem: this.getVirtualFileSystem()
   };
 
   this.branchCollection.toJSON().forEach(function(branch) {
@@ -278,6 +459,7 @@ GitEngine.prototype.loadTreeFromString = function(treeString) {
 GitEngine.prototype.instantiateFromTree = function(tree) {
   // now we do the loading part
   var createdSoFar = {};
+  this.loadVirtualFileSystem(tree.virtualFileSystem);
 
   Object.values(tree.commits).forEach(function(commitJSON) {
     var commit = this.getOrMakeRecursive(tree, createdSoFar, commitJSON.id, this.gitVisuals);
@@ -603,6 +785,7 @@ GitEngine.prototype.removeAll = function() {
   this.refs = {};
   this.HEAD = null;
   this.rootCommit = null;
+  this.virtualFileSystem = createEmptyVirtualFileSystem();
 
   if (this.origin) {
     // we will restart all this jazz during init from tree
@@ -653,15 +836,6 @@ GitEngine.prototype.validateBranchName = function(name) {
         { branch: name }
       )
     });
-  }
-  if (name.length > 9) {
-    name = name.slice(0, 9);
-    this.command.addWarning(
-      intl.str(
-        'branch-name-short',
-        { branch: name }
-      )
-    );
   }
   return name;
 };
@@ -1590,6 +1764,7 @@ GitEngine.prototype.commit = function(options) {
   }
 
   var newCommit = this.makeCommit([targetCommit], id);
+  this.commitVirtualFiles(newCommit.get('id'));
   if (this.getDetachedHead() && this.mode === 'git') {
     this.command.addWarning(intl.str('git-warning-detached'));
   }
@@ -2751,24 +2926,83 @@ GitEngine.prototype.show = function(ref) {
 };
 
 GitEngine.prototype.status = function() {
-  // UGLY todo
   var lines = [];
+  var fileSystem = this.virtualFileSystem;
+  var workingFiles = fileSystem.files || {};
+  var stagedFiles = fileSystem.stagedFiles || {};
+  var committedFiles = fileSystem.lastCommittedFiles || {};
+
+  var hasOwn = function(object, key) {
+    return Object.prototype.hasOwnProperty.call(object, key);
+  };
+  var displayPath = function(path) {
+    return path.replace(/^\/+/, '');
+  };
+
+  var stagedPaths = Object.keys(stagedFiles).filter(function(path) {
+    return !hasOwn(committedFiles, path) ||
+      stagedFiles[path] !== committedFiles[path];
+  }).sort();
+
+  var unstagedPaths = Object.keys(workingFiles).filter(function(path) {
+    var isTracked = hasOwn(committedFiles, path) || hasOwn(stagedFiles, path);
+    if (!isTracked) {
+      return false;
+    }
+    var comparisonContent = hasOwn(stagedFiles, path)
+      ? stagedFiles[path]
+      : committedFiles[path];
+    return workingFiles[path] !== comparisonContent;
+  }).sort();
+
+  var untrackedPaths = Object.keys(workingFiles).filter(function(path) {
+    return !hasOwn(committedFiles, path) && !hasOwn(stagedFiles, path);
+  }).sort();
+
   if (this.getDetachedHead()) {
     lines.push(intl.str('git-status-detached'));
   } else {
     var branchName = this.resolveNameNoPrefix('HEAD');
     lines.push(intl.str('git-status-onbranch', {branch: branchName}));
   }
-  lines.push('Changes to be committed:');
-  lines.push('');
-  lines.push(TAB + 'modified: cal/OskiCostume.stl');
-  lines.push('');
-  lines.push(intl.str('git-status-readytocommit'));
 
-  var msg = '';
-  lines.forEach(function (line) {
-    msg += '# ' + line + '\n';
-  });
+  if (stagedPaths.length) {
+    lines.push('');
+    lines.push('Changes to be committed:');
+    stagedPaths.forEach(function(path) {
+      var changeType = hasOwn(committedFiles, path) ? 'modified:' : 'new file:';
+      lines.push(TAB + changeType + ' ' + displayPath(path));
+    });
+  }
+
+  if (unstagedPaths.length) {
+    lines.push('');
+    lines.push('Changes not staged for commit:');
+    unstagedPaths.forEach(function(path) {
+      lines.push(TAB + 'modified: ' + displayPath(path));
+    });
+  }
+
+  if (untrackedPaths.length) {
+    lines.push('');
+    lines.push('Untracked files:');
+    untrackedPaths.forEach(function(path) {
+      lines.push(TAB + displayPath(path));
+    });
+  }
+
+  if (!stagedPaths.length && !unstagedPaths.length && !untrackedPaths.length) {
+    lines.push('');
+    lines.push('nothing to commit, working tree clean');
+  } else if (!stagedPaths.length) {
+    lines.push('');
+    lines.push('nothing added to commit');
+  }
+
+  var msg = lines.join('\n');
+  if (msg) {
+    msg += '\n';
+  }
 
   throw new CommandResult({
     msg: msg

@@ -5,6 +5,8 @@ import Q from "q";
 import TreeCompare from "../../../js/graph/treeCompare";
 import * as axios from "axios";
 import * as https from "node:https";
+import {personalizeLevel} from "../../student-profile";
+import {verifyStudentSubmission} from "../../student-submission-verifier";
 
 const _ = require('underscore');
 const state = {}
@@ -19,7 +21,10 @@ export class DispatchFromLevelModuleService {
     const strCommand = dispatchFromLevelDto.rawCommandStr
     const jwtToken = dispatchFromLevelDto.jwtToken
 
-    const level = levelSequences[levelType][levelIndex - 1]
+    const level = personalizeLevel(
+      levelSequences[levelType][levelIndex - 1],
+      dispatchFromLevelDto.studentProfile,
+    )
 
     let userState = state[jwtToken] ? state[jwtToken] : undefined
     if (!userState) {
@@ -57,12 +62,15 @@ export class DispatchFromLevelModuleService {
     // ----------------------------------------------------------
     // проверяем решенность уровня
     let current = headless.gitEngine.printTree();
-    let res = await TreeCompare.dispatchFromLevel(level, current);
+    const graphMatches = await TreeCompare.dispatchFromLevel(level, current);
+    const submissionVerification = verifyStudentSubmission(level, headless.gitEngine);
+    const res = graphMatches && submissionVerification.ok;
 
     // -----------------------------------------------------------
     // выводим дерево из решения, текущее состояние дерева для данного пользователя и результат проверки
     console.log(level.goalTreeString)
     console.log(headless.gitEngine.printTree())
+    console.log(submissionVerification.checks)
     console.log(res)
 
     // -----------------------------------------------------------

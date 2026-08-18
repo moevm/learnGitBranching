@@ -28,6 +28,9 @@ async def _generate_jwt_token(*, lti_form: LtiRequest) -> str:
         user_id=lti_form.user_id,
         pass_back_params=lti_form.pass_back_params,
         task_id=lti_form.custom_task_id,
+        given_name=lti_form.lis_person_name_given,
+        family_name=lti_form.lis_person_name_family,
+        full_name=lti_form.lis_person_name_full,
     )
 
 
