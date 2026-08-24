@@ -35,6 +35,25 @@ async def _generate_jwt_token(*, lti_form: LtiRequest) -> str:
 
 
 async def _is_auth_lti_request(lti_form: LtiRequest, request: Request) -> bool:
+    external_url = f"https://{settings.nginx_host_name}{request.url.path}"
+
+    if request.url.query:
+        external_url += f"?{request.url.query}"
+
+    print(
+        "LTI AUTH:",
+        {
+            "internal_url": str(request.url),
+            "external_url": external_url,
+            "received_consumer_key": lti_form.oauth_consumer_key,
+            "expected_consumer_key": settings.session_public_key,
+            "host": request.headers.get("host"),
+            "forwarded_host": request.headers.get("x-forwarded-host"),
+            "forwarded_proto": request.headers.get("x-forwarded-proto"),
+        },
+        flush=True,
+    )
+
     return await lti_auth_service.is_auth_lti_request(
         oauth_consumer_key=lti_form.oauth_consumer_key,
         session_info=SessionInfo(
@@ -42,7 +61,7 @@ async def _is_auth_lti_request(lti_form: LtiRequest, request: Request) -> bool:
             nonce=lti_form.oauth_nonce,
         ),
         lti_form=dict(await request.form()),
-        request_url=str(request.url),
+        request_url=external_url,
         request_headers=dict(request.headers),
     )
 
