@@ -125,7 +125,7 @@ var parse = function(str) {
       if (regex.exec(str)) {
         vcs = thisVCS;
         method = thisMethod;
-        var config = commandConfigs[thisVCS][thisMethod];
+        var config = commandConfigs[thisVCS][thisMethod.replace(/-/g, '')];
         if (config.parseArguments) {
           options = config.parseArguments(str);
           return;
@@ -147,7 +147,7 @@ var parse = function(str) {
 
   // we support this command!
   // parse off the options and assemble the map / general args
-  var selectedConfig = commandConfigs[vcs][method];
+  var selectedConfig = commandConfigs[vcs][method.replace(/-/g, '')];
   var parsedOptions = new CommandOptionParser(vcs, method, options);
   var error;
   if (selectedConfig.parseArguments) {
