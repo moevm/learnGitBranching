@@ -1,0 +1,52 @@
+name: learn-git-branching-kantserov
+
+services:
+  selenium-hub:
+    image: selenium/hub:4.27.0
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:4444/status"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  chrome:
+    image: selenium/node-chrome:4.27.0
+    shm_size: 2gb
+    depends_on:
+      selenium-hub:
+        condition: service_healthy
+    environment:
+      SE_EVENT_BUS_HOST: selenium-hub
+      SE_EVENT_BUS_PUBLISH_PORT: 4442
+      SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
+      SE_VNC_NO_PASSWORD: "1"
+      SE_NODE_MAX_SESSIONS: "1"
+    ports:
+      - "7900:7900"
+
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.tests
+    depends_on:
+      selenium-hub:
+        condition: service_healthy
+      chrome:
+        condition: service_started
+    env_file:
+      - path: .env.tests
+        required: false
+    environment:
+      SELENIUM_REMOTE_URL: ${SELENIUM_REMOTE_URL:-http://selenium-hub:4444/wd/hub}
+      TARGET_URL: ${TARGET_URL:-https://learngitbranching.js.org/?locale=ru_RU&NODEMO}
+      MOODLE_COURSE_URL: ${MOODLE_COURSE_URL:-}
+      MOODLE_USERNAME: ${MOODLE_USERNAME:-}
+      MOODLE_PASSWORD: ${MOODLE_PASSWORD:-}
+      MOODLE_ACTIVITY_NAME: ${MOODLE_ACTIVITY_NAME:-LearnGitBranching}
+      MOODLE_ACTIVITY_URL: ${MOODLE_ACTIVITY_URL:-}
+      SELENIUM_COMMAND_TIMEOUT: ${SELENIUM_COMMAND_TIMEOUT:-40}
+    command: pytest tests
