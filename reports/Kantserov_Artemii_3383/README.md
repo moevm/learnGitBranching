@@ -25,7 +25,7 @@
 2. `chrome` — браузер из образа `selenium/node-chrome`;
 3. `tests` — Python-контейнер с `pytest` и тестами.
 
-Как в принятом PR #28, для каждого уровня создан отдельный файл `tests/test_level_*.py`, а повторяющиеся действия вынесены в `tests/pages/base_page.py` и Page Object `tests/pages/learn_git_page.py`.
+Для каждого уровня создан отдельный файл `tests/test_level_*.py`, а повторяющиеся действия вынесены в `tests/pages/base_page.py` и Page Object `tests/pages/learn_git_page.py`.
 
 ## Быстрый запуск напрямую
 

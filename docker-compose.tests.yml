@@ -41,12 +41,5 @@ services:
       - path: .env.tests
         required: false
     environment:
-      SELENIUM_REMOTE_URL: ${SELENIUM_REMOTE_URL:-http://selenium-hub:4444/wd/hub}
-      TARGET_URL: ${TARGET_URL:-https://learngitbranching.js.org/?locale=ru_RU&NODEMO}
-      MOODLE_COURSE_URL: ${MOODLE_COURSE_URL:-}
-      MOODLE_USERNAME: ${MOODLE_USERNAME:-}
-      MOODLE_PASSWORD: ${MOODLE_PASSWORD:-}
-      MOODLE_ACTIVITY_NAME: ${MOODLE_ACTIVITY_NAME:-LearnGitBranching}
-      MOODLE_ACTIVITY_URL: ${MOODLE_ACTIVITY_URL:-}
-      SELENIUM_COMMAND_TIMEOUT: ${SELENIUM_COMMAND_TIMEOUT:-40}
+      SELENIUM_REMOTE_URL: http://selenium-hub:4444/wd/hub
     command: pytest tests
