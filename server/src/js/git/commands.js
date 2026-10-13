@@ -235,8 +235,7 @@ var commandConfig = {
       if (msg) {
         msg = msg
           .replace(/&quot;/g, '"')
-          .replace(/^"/g, '')
-          .replace(/"$/g, '');
+          .replace(/^(["'])([\s\S]*)\1$/, '$2');
 
         newCommit.set('commitMessage', msg);
       }
